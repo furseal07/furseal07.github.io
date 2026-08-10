@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -12,11 +12,26 @@
 
   <!-- ===================== INTRO 오버레이 (로드 시 1회 재생) ===================== -->
   <div class="intro" aria-hidden="true">
-    <div class="intro__stage">
-      <span class="intro__line">안녕하세요! <span class="intro__wave">👋🏻</span></span>
-      <span class="intro__line">기획자에서 운영자로</span>
-      <span class="intro__line">운영자에서 개발자로</span>
+
+    <!-- 배경: 단계별 사진 (각 2장 크로스페이드). 이미지는 assets/img/ 에 넣으세요 -->
+    <div class="intro__bg">
+      <div class="intro__img intro__img--plan-1"></div>
+      <div class="intro__img intro__img--plan-2"></div>
+      <div class="intro__img intro__img--ops-1"></div>
+      <div class="intro__img intro__img--ops-2"></div>
+      <div class="intro__img intro__img--dev-1"></div>
+      <div class="intro__img intro__img--dev-2"></div>
+      <div class="intro__scrim"></div>
     </div>
+
+    <!-- 텍스트: 단계별 크로스페이드 -->
+    <div class="intro__stage">
+      <span class="intro__line intro__line--greeting">안녕하세요! <span class="intro__wave">👋🏻</span></span>
+      <span class="intro__line intro__line--plan">기획자</span>
+      <span class="intro__line intro__line--ops">기획자에서 운영자로</span>
+      <span class="intro__line intro__line--dev">운영자에서 개발자로</span>
+    </div>
+
   </div>
 
   <!-- ===================== NAV ===================== -->
@@ -33,7 +48,6 @@
         <a href="#contact">Contact</a>
       </nav>
 
-      <!-- 이력서 PDF: 파일 준비되면 assets/에 넣고 경로만 맞추세요 -->
       <a class="btn btn--pdf" href="assets/resume.pdf" download>이력서 PDF</a>
     </div>
   </header>
@@ -45,7 +59,6 @@
       <div class="hero__inner container">
         <div class="hero__content">
 
-          <!-- 커리어 여정: 기획 → 운영 → 개발 (현재 = 개발) -->
           <div class="journey" aria-label="커리어 여정: 기획에서 운영, 개발로">
             <span class="journey__step">
               <span class="journey__dot"></span>기획

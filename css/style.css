@@ -44,7 +44,7 @@
   src: url("../assets/fonts/JetBrainsMono-Medium.woff2") format("woff2");
   font-weight: 500; font-display: swap;
 }
- 
+
 
 /* =============================================================
    2. 디자인 토큰 (라이트 모드 기본값)
@@ -343,10 +343,8 @@ a.link:hover { color: var(--accent-hover); }
 
 
 /* =============================================================
-   11. INTRO 오버레이 + HERO(메인 화면) + 커리어 여정
+   11. HERO (메인 화면) + 커리어 여정
    ============================================================= */
-
-/* ----- 메인 히어로 ----- */
 
 .hero {
   min-height: 100dvh;
@@ -355,7 +353,6 @@ a.link:hover { color: var(--accent-hover); }
 }
 .hero__content { max-width: 46rem; }
 
-/* 커리어 여정: 기획 -> 운영 -> 개발 (현재 = 개발, 액센트) */
 .journey {
   display: flex; align-items: center;
   gap: var(--space-sm);
@@ -383,7 +380,7 @@ a.link:hover { color: var(--accent-hover); }
 .hero__cta { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
 
 
-/* ----- 버튼 (라운드 md 고정, active 시 촉각 피드백) ----- */
+/* ----- 버튼 ----- */
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -399,30 +396,25 @@ a.link:hover { color: var(--accent-hover); }
               transform var(--dur-fast) var(--ease);
 }
 .btn:active { transform: translateY(1px); }
-
 .btn--primary { background: var(--accent); color: var(--accent-contrast); }
 .btn--primary:hover { background: var(--accent-hover); }
-
-.btn--ghost {
-  background: transparent; color: var(--text);
-  border-color: var(--border-strong);
-}
+.btn--ghost { background: transparent; color: var(--text); border-color: var(--border-strong); }
 .btn--ghost:hover { border-color: var(--text-muted); background: var(--bg-elevated); }
-
-.btn--pdf {
-  background: var(--bg-elevated); color: var(--text);
-  border-color: var(--border-strong);
-  padding: 0.5rem 1rem;
-}
+.btn--pdf { background: var(--bg-elevated); color: var(--text); border-color: var(--border-strong); padding: 0.5rem 1rem; }
 .btn--pdf:hover { border-color: var(--text-muted); }
 
 
 /* =============================================================
-   INTRO 오버레이 (순수 CSS · 로드 시 1회)
+   12. INTRO 오버레이 (순수 CSS · 로드 시 1회 · 3단계 배경 시퀀스)
    -------------------------------------------------------------
-   - 기본값은 display:none → JS나 애니메이션이 없어도 메인이 항상 보임
-   - 모션 선호 시에만 오버레이가 뜨고 시퀀스가 재생됨
-   - 모션 끈 사용자는 인트로를 건너뛰고 곧바로 메인 화면을 봄
+   타이밍 맵 (초): 숫자만 바꾸면 속도 조절 가능
+     0.2  안녕하세요
+     1.6  "기획자"            + 기획 사진(plan-1 → plan-2)
+     3.5  "기획자에서 운영자로" + 운영 사진(ops-1 → ops-2)
+     5.7  "운영자에서 개발자로" + 개발 사진(dev-1 → dev-2)
+     7.9  인트로 사라지고 메인 등장
+   기본값은 display:none → 모션 끈 사용자는 인트로 없이 바로 메인
+   인트로는 항상 어두운 시네마틱 톤(사진 위 흰 글씨)
    ============================================================= */
 
 .intro { display: none; }
@@ -431,51 +423,79 @@ a.link:hover { color: var(--accent-hover); }
 
   .intro {
     position: fixed; inset: 0; z-index: 200;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg);
+    background: var(--zinc-950);
     pointer-events: none;
-    animation: intro-out 0.5s var(--ease) 4s forwards;
+    overflow: hidden;
+    animation: intro-out 0.6s var(--ease) 7.9s forwards;
   }
-  .intro__stage {
-    position: relative;
-    width: 100%; max-width: var(--container);
-    padding-inline: var(--space-lg);
-    min-height: 4em;
+
+  /* ----- 배경 사진 (각 단계 2장 크로스페이드) ----- */
+  .intro__bg { position: absolute; inset: 0; }
+  .intro__img {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    will-change: opacity, transform;
   }
+  .intro__img--plan-1 { background-image: url("../assets/img/plan-1.jpg"); animation: imgfade 1.5s var(--ease) 1.6s forwards; }
+  .intro__img--plan-2 { background-image: url("../assets/img/plan-2.jpg"); animation: imgfade 1.5s var(--ease) 2.6s forwards; }
+  .intro__img--ops-1  { background-image: url("../assets/img/ops-1.jpg");  animation: imgfade 1.5s var(--ease) 3.5s forwards; }
+  .intro__img--ops-2  { background-image: url("../assets/img/ops-2.jpg");  animation: imgfade 1.5s var(--ease) 4.5s forwards; }
+  .intro__img--dev-1  { background-image: url("../assets/img/dev-1.jpg");  animation: imgfade 1.6s var(--ease) 5.7s forwards; }
+  .intro__img--dev-2  { background-image: url("../assets/img/dev-2.jpg");  animation: imgfade 1.6s var(--ease) 6.7s forwards; }
+
+  /* 어두운 막: 사진 위 흰 글씨 가독성 확보 */
+  .intro__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(9, 9, 11, 0.55), rgba(9, 9, 11, 0.68));
+  }
+
+  /* ----- 텍스트 (단계별 크로스페이드, 항상 밝은색) ----- */
+  .intro__stage { position: relative; z-index: 1; height: 100%; }
   .intro__line {
     position: absolute; left: 0; right: 0; top: 50%;
     transform: translateY(-50%);
     text-align: center;
+    padding-inline: var(--space-lg);
     font-size: clamp(1.75rem, 5vw, 3rem);
     font-weight: 600;
     letter-spacing: var(--tracking-tight);
-    color: var(--text);
+    color: var(--zinc-50);
     opacity: 0;
   }
-  .intro__line:nth-child(1) { animation: phrase 1.5s var(--ease) 0.2s forwards; }
-  .intro__line:nth-child(2) { animation: phrase 1.3s var(--ease) 1.6s forwards; }
-  .intro__line:nth-child(3) { animation: phrase 1.3s var(--ease) 2.7s forwards; }
+  .intro__line--greeting { animation: beat 1.4s var(--ease) 0.2s forwards; }
+  .intro__line--plan     { animation: beat 2.0s var(--ease) 1.6s forwards; }
+  .intro__line--ops      { animation: beat 2.1s var(--ease) 3.5s forwards; }
+  .intro__line--dev      { animation: beat 2.2s var(--ease) 5.7s forwards; }
 
   .intro__wave {
     display: inline-block; transform-origin: 70% 70%;
     animation: wave 1.3s var(--ease) 0.4s 2;
   }
 
-  /* 인트로가 끝나며 히어로 콘텐츠가 순차 등장 */
+  /* ----- 인트로 후 히어로 등장 ----- */
   .hero__content > * {
     opacity: 0;
     animation: hero-in var(--dur-slow) var(--ease) forwards;
   }
-  .journey     { animation-delay: 4.2s; }
-  .hero__title { animation-delay: 4.35s; }
-  .hero__cta   { animation-delay: 4.5s; }
+  .journey     { animation-delay: 8.0s; }
+  .hero__title { animation-delay: 8.15s; }
+  .hero__cta   { animation-delay: 8.3s; }
 }
 
-@keyframes phrase {
+@keyframes beat {
   0%   { opacity: 0; transform: translateY(calc(-50% + 12px)); }
-  18%  { opacity: 1; transform: translateY(-50%); }
-  70%  { opacity: 1; transform: translateY(-50%); }
+  16%  { opacity: 1; transform: translateY(-50%); }
+  78%  { opacity: 1; transform: translateY(-50%); }
   100% { opacity: 0; transform: translateY(calc(-50% - 12px)); }
+}
+
+@keyframes imgfade {
+  0%   { opacity: 0; transform: scale(1.08); }
+  22%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.12); }
 }
 
 @keyframes intro-out {
