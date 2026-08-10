@@ -1,0 +1,83 @@
+<!DOCTYPE html> 
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>엄상희 | 웹 개발자 포트폴리오</title>
+  <meta name="description" content="기획에서 운영, 개발로. 웹표준·웹접근성·반응형을 지키며 UI를 구현하는 신입 웹 개발자 엄상희의 포트폴리오.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+
+  <!-- ===================== INTRO 오버레이 (로드 시 1회 재생) ===================== -->
+  <div class="intro" aria-hidden="true">
+    <div class="intro__stage">
+      <span class="intro__line">안녕하세요! <span class="intro__wave">👋🏻</span></span>
+      <span class="intro__line">기획자에서 운영자로</span>
+      <span class="intro__line">운영자에서 개발자로</span>
+    </div>
+  </div>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="site-nav">
+    <div class="site-nav__inner container">
+      <a class="brand" href="#top">
+        <span class="brand__name">엄상희</span>
+        <span class="brand__role mono">Web Developer</span>
+      </a>
+
+      <nav class="nav-links" aria-label="주요 섹션">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <!-- 이력서 PDF: 파일 준비되면 assets/에 넣고 경로만 맞추세요 -->
+      <a class="btn btn--pdf" href="assets/resume.pdf" download>이력서 PDF</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===================== HERO (메인 화면) ===================== -->
+    <section class="hero" id="top">
+      <div class="hero__inner container">
+        <div class="hero__content">
+
+          <!-- 커리어 여정: 기획 → 운영 → 개발 (현재 = 개발) -->
+          <div class="journey" aria-label="커리어 여정: 기획에서 운영, 개발로">
+            <span class="journey__step">
+              <span class="journey__dot"></span>기획
+            </span>
+            <span class="journey__line"></span>
+            <span class="journey__step">
+              <span class="journey__dot"></span>운영
+            </span>
+            <span class="journey__line"></span>
+            <span class="journey__step journey__step--current">
+              <span class="journey__dot"></span>개발
+            </span>
+          </div>
+
+          <h1 class="hero__title">
+            다양한 경험과 끊임없이 배우고 노력하는 태도를 가진<br>
+            신입 <span class="hero__title-accent">웹 개발자</span> 엄상희입니다.
+          </h1>
+
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#projects">프로젝트 보기</a>
+            <a class="btn btn--ghost" href="https://github.com/furseal07" target="_blank" rel="noopener">GitHub</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 이후 About / Projects(UI 인터랙션 데모 포함) / Contact 섹션이 이어집니다 -->
+
+  </main>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
