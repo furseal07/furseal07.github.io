@@ -423,7 +423,9 @@ a.link:hover { color: var(--accent-hover); }
 
   .intro {
     position: fixed; inset: 0; z-index: 200;
-    background: var(--zinc-950);
+    background:
+      radial-gradient(120% 120% at 50% 30%, #1c2436 0%, #0b0e16 70%),
+      #09090b;
     pointer-events: none;
     overflow: hidden;
     animation: intro-out 0.6s var(--ease) 7.9s forwards;
