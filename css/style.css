@@ -286,7 +286,8 @@ a.link:hover { color: var(--accent-hover); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  /* 인트로 관련 요소는 제외: 인트로는 항상 정상 재생되어야 함 */
+  *:not(.intro):not(.intro *):not(.hero__content > *) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -409,81 +410,83 @@ a.link:hover { color: var(--accent-hover); }
    -------------------------------------------------------------
    타이밍 맵 (초): 숫자만 바꾸면 속도 조절 가능
      0.2  안녕하세요
-     1.6  "기획자"            + 기획 사진(plan-1 → plan-2)
-     3.5  "기획자에서 운영자로" + 운영 사진(ops-1 → ops-2)
-     5.7  "운영자에서 개발자로" + 개발 사진(dev-1 → dev-2)
+     1.6  "기획자"             + 기획 사진(plan-1 -> plan-2)
+     3.5  "기획자에서 운영자로"  + 운영 사진(ops-1 -> ops-2)
+     5.7  "운영자에서 개발자로"  + 개발 사진(dev-1 -> dev-2)
      7.9  인트로 사라지고 메인 등장
-   기본값은 display:none → 모션 끈 사용자는 인트로 없이 바로 메인
-   인트로는 항상 어두운 시네마틱 톤(사진 위 흰 글씨)
+   * 인트로는 모션 설정과 무관하게 항상 재생됩니다.
+   * reduced-motion 사용자에게는 확대/슬라이드만 끄고 페이드는 유지합니다.
    ============================================================= */
 
-.intro { display: none; }
+.intro {
+  position: fixed; inset: 0; z-index: 200;
+  background:
+    radial-gradient(120% 120% at 50% 30%, #1c2436 0%, #0b0e16 70%),
+    #09090b;
+  pointer-events: none;
+  overflow: hidden;
+  animation: intro-out 0.6s var(--ease) 7.9s forwards;
+}
 
-@media (prefers-reduced-motion: no-preference) {
+/* ----- 배경 사진 (각 단계 2장 크로스페이드) ----- */
+.intro__bg { position: absolute; inset: 0; }
+.intro__img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.intro__img--plan-1 { background-image: url("../assets/img/plan-1.jpg"); animation: imgfade 1.5s var(--ease) 1.6s forwards; }
+.intro__img--plan-2 { background-image: url("../assets/img/plan-2.jpg"); animation: imgfade 1.5s var(--ease) 2.6s forwards; }
+.intro__img--ops-1  { background-image: url("../assets/img/ops-1.jpg");  animation: imgfade 1.5s var(--ease) 3.5s forwards; }
+.intro__img--ops-2  { background-image: url("../assets/img/ops-2.jpg");  animation: imgfade 1.5s var(--ease) 4.5s forwards; }
+.intro__img--dev-1  { background-image: url("../assets/img/dev-1.jpg");  animation: imgfade 1.6s var(--ease) 5.7s forwards; }
+.intro__img--dev-2  { background-image: url("../assets/img/dev-2.jpg");  animation: imgfade 1.6s var(--ease) 6.7s forwards; }
 
-  .intro {
-    position: fixed; inset: 0; z-index: 200;
-    background:
-      radial-gradient(120% 120% at 50% 30%, #1c2436 0%, #0b0e16 70%),
-      #09090b;
-    pointer-events: none;
-    overflow: hidden;
-    animation: intro-out 0.6s var(--ease) 7.9s forwards;
-  }
+/* 어두운 막: 사진 위 흰 글씨 가독성 확보 */
+.intro__scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(9, 9, 11, 0.55), rgba(9, 9, 11, 0.68));
+}
 
-  /* ----- 배경 사진 (각 단계 2장 크로스페이드) ----- */
-  .intro__bg { position: absolute; inset: 0; }
-  .intro__img {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    opacity: 0;
-    will-change: opacity, transform;
-  }
-  .intro__img--plan-1 { background-image: url("../assets/img/plan-1.jpg"); animation: imgfade 1.5s var(--ease) 1.6s forwards; }
-  .intro__img--plan-2 { background-image: url("../assets/img/plan-2.jpg"); animation: imgfade 1.5s var(--ease) 2.6s forwards; }
-  .intro__img--ops-1  { background-image: url("../assets/img/ops-1.jpg");  animation: imgfade 1.5s var(--ease) 3.5s forwards; }
-  .intro__img--ops-2  { background-image: url("../assets/img/ops-2.jpg");  animation: imgfade 1.5s var(--ease) 4.5s forwards; }
-  .intro__img--dev-1  { background-image: url("../assets/img/dev-1.jpg");  animation: imgfade 1.6s var(--ease) 5.7s forwards; }
-  .intro__img--dev-2  { background-image: url("../assets/img/dev-2.jpg");  animation: imgfade 1.6s var(--ease) 6.7s forwards; }
+/* ----- 텍스트 (단계별 크로스페이드, 항상 밝은색) ----- */
+.intro__stage { position: relative; z-index: 1; height: 100%; }
+.intro__line {
+  position: absolute; left: 0; right: 0; top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  padding-inline: var(--space-lg);
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  color: var(--zinc-50);
+  opacity: 0;
+}
+.intro__line--greeting { animation: beat 1.4s var(--ease) 0.2s forwards; }
+.intro__line--plan     { animation: beat 2.0s var(--ease) 1.6s forwards; }
+.intro__line--ops      { animation: beat 2.1s var(--ease) 3.5s forwards; }
+.intro__line--dev      { animation: beat 2.2s var(--ease) 5.7s forwards; }
 
-  /* 어두운 막: 사진 위 흰 글씨 가독성 확보 */
-  .intro__scrim {
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg,
-      rgba(9, 9, 11, 0.55), rgba(9, 9, 11, 0.68));
-  }
+.intro__wave {
+  display: inline-block; transform-origin: 70% 70%;
+  animation: wave 1.3s var(--ease) 0.4s 2;
+}
 
-  /* ----- 텍스트 (단계별 크로스페이드, 항상 밝은색) ----- */
-  .intro__stage { position: relative; z-index: 1; height: 100%; }
-  .intro__line {
-    position: absolute; left: 0; right: 0; top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-    padding-inline: var(--space-lg);
-    font-size: clamp(1.75rem, 5vw, 3rem);
-    font-weight: 600;
-    letter-spacing: var(--tracking-tight);
-    color: var(--zinc-50);
-    opacity: 0;
-  }
-  .intro__line--greeting { animation: beat 1.4s var(--ease) 0.2s forwards; }
-  .intro__line--plan     { animation: beat 2.0s var(--ease) 1.6s forwards; }
-  .intro__line--ops      { animation: beat 2.1s var(--ease) 3.5s forwards; }
-  .intro__line--dev      { animation: beat 2.2s var(--ease) 5.7s forwards; }
+/* ----- 인트로 후 히어로 등장 ----- */
+.hero__content > * {
+  opacity: 0;
+  animation: hero-in var(--dur-slow) var(--ease) 8.0s forwards;
+}
+.journey     { animation-delay: 8.0s; }
+.hero__title { animation-delay: 8.15s; }
+.hero__cta   { animation-delay: 8.3s; }
 
-  .intro__wave {
-    display: inline-block; transform-origin: 70% 70%;
-    animation: wave 1.3s var(--ease) 0.4s 2;
-  }
-
-  /* ----- 인트로 후 히어로 등장 ----- */
-  .hero__content > * {
-    opacity: 0;
-    animation: hero-in var(--dur-slow) var(--ease) forwards;
-  }
-  .journey     { animation-delay: 8.0s; }
-  .hero__title { animation-delay: 8.15s; }
-  .hero__cta   { animation-delay: 8.3s; }
+/* ----- reduced-motion: 확대/슬라이드만 끄고 페이드는 유지 ----- */
+@media (prefers-reduced-motion: reduce) {
+  .intro__img { animation-name: fadeonly; }
+  .intro__line { animation-name: fadeonly; }
+  .hero__content > * { animation-name: fadeonly; }
 }
 
 @keyframes beat {
@@ -498,6 +501,13 @@ a.link:hover { color: var(--accent-hover); }
   22%  { opacity: 1; }
   75%  { opacity: 1; }
   100% { opacity: 0; transform: scale(1.12); }
+}
+
+@keyframes fadeonly {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @keyframes intro-out {
