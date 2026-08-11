@@ -1,93 +1,410 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>엄상희 | 웹 개발자 포트폴리오</title>
-  <meta name="description" content="기획에서 운영, 개발로. 웹표준·웹접근성·반응형을 지키며 UI를 구현하는 신입 웹 개발자 엄상희의 포트폴리오.">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <a class="skip-link" href="#main">본문 바로가기</a>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10271f" />
+    <meta
+      name="description"
+      content="기획과 운영 경험을 바탕으로 사용자와 비즈니스 흐름을 이해하는 Java 풀스택 개발자 엄상희의 포트폴리오입니다."
+    />
+    <meta property="og:title" content="엄상희 | Java Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="운영에서 발견한 문제를 데이터 흐름과 코드로 해결합니다."
+    />
+    <meta property="og:type" content="website" />
+    <title>엄상희 | Java Full-Stack Developer</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 바로가기</a>
 
-  <!-- ===================== INTRO 오버레이 (로드 시 1회 재생) ===================== -->
-  <div class="intro" aria-hidden="true">
-
-    <!-- 1) 인사말 -->
-    <div class="intro__greeting-beat">
-      <span class="intro__greeting">안녕하세요! <span class="intro__wave">👋🏻</span></span>
-    </div>
-
-    <!-- 2) 기획자 → 운영자 → 개발자 + 각 역할 아래 연도 -->
-    <div class="intro__flow">
-      <div class="intro__col">
-        <span class="intro__role intro__role--plan">기획자</span>
-        <span class="intro__year intro__year--plan">2018 ~ 2020</span>
-      </div>
-      <span class="intro__arrow intro__arrow--1">
-        <span class="intro__arrow-line"></span>
-        <span class="intro__arrow-head"></span>
-      </span>
-      <div class="intro__col">
-        <span class="intro__role intro__role--ops">운영자</span>
-        <span class="intro__year intro__year--ops">2021 ~ 2025</span>
-      </div>
-      <span class="intro__arrow intro__arrow--2">
-        <span class="intro__arrow-line"></span>
-        <span class="intro__arrow-head"></span>
-      </span>
-      <div class="intro__col">
-        <span class="intro__role intro__role--dev">개발자</span>
-        <span class="intro__year intro__year--dev">2026</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ===================== NAV ===================== -->
-  <header class="site-nav">
-    <div class="site-nav__inner container">
-      <a class="brand" href="#top">
-        <span class="brand__name">엄상희</span>
-        <span class="brand__role mono">Web Developer</span>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="엄상희 포트폴리오 홈">
+        <span>SH</span><i></i><small>WEB DEV</small>
       </a>
-      <nav class="nav-links" aria-label="주요 섹션">
-        <a href="#about">About</a>
+      <nav class="desktop-nav" aria-label="주요 메뉴">
         <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
       </nav>
-      <a class="btn btn--pdf" href="assets/resume.pdf" download>이력서 PDF</a>
-    </div>
-  </header>
-
-  <main id="main">
-    <section class="hero" id="top">
-      <div class="hero__inner container">
-        <div class="hero__content">
-
-          <div class="journey" aria-label="커리어 여정: 기획에서 운영, 개발로">
-            <span class="journey__step"><span class="journey__dot"></span>기획</span>
-            <span class="journey__line"></span>
-            <span class="journey__step"><span class="journey__dot"></span>운영</span>
-            <span class="journey__line"></span>
-            <span class="journey__step journey__step--current"><span class="journey__dot"></span>개발</span>
-          </div>
-
-          <h1 class="hero__title">
-            다양한 경험과 끊임없이 배우고 노력하는 태도를 가진<br>
-            신입 <span class="hero__title-accent">웹 개발자</span> 엄상희입니다.
-          </h1>
-
-          <div class="hero__cta">
-            <a class="btn btn--primary" href="#projects">프로젝트 보기</a>
-            <a class="btn btn--ghost" href="https://github.com/furseal07" target="_blank" rel="noopener">GitHub</a>
-          </div>
-
-        </div>
+      <div class="header-actions">
+        <a class="header-contact" href="mailto:luckie0725@gmail.com">Let’s talk <span>↗</span></a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">
+          <span></span><span></span><span class="sr-only">메뉴 열기</span>
+        </button>
       </div>
-    </section>
-  </main>
+      <nav class="mobile-nav" id="mobile-nav" aria-label="모바일 메뉴" hidden>
+        <a href="#projects"><span>01</span>Projects</a>
+        <a href="#about"><span>02</span>About</a>
+        <a href="#skills"><span>03</span>Skills</a>
+        <a href="#experience"><span>04</span>Experience</a>
+        <a href="#contact"><span>05</span>Contact</a>
+      </nav>
+    </header>
 
-  <script src="js/main.js" defer></script>
-</body>
+    <main id="main">
+      <section class="hero" id="home">
+        <div class="hero__backdrop" aria-hidden="true">
+          <span>DATA</span><span>FLOW</span><span>CODE</span>
+        </div>
+        <div class="hero__content">
+          <div class="hero__eyebrow reveal">
+            <span class="status-dot"></span>
+            Java Full-Stack Developer · Seoul, KR
+          </div>
+          <h1 class="reveal">
+            운영에서 발견한 문제를,<br />
+            <em>데이터 흐름과 코드로</em><br />
+            해결합니다.
+          </h1>
+          <div class="hero__intro reveal">
+            <p>
+              안녕하세요, <strong>엄상희</strong>입니다. 기획과 운영에서 쌓은 프로세스 이해를 바탕으로
+              예외 상황에서도 일관된 웹 서비스를 만듭니다.
+            </p>
+            <div class="hero__buttons">
+              <a class="button button--primary" href="#projects">대표 프로젝트 보기 <span>↓</span></a>
+              <a class="button button--ghost" href="#experience">이력 요약 보기 <span>→</span></a>
+            </div>
+          </div>
+        </div>
+
+        <figure class="portrait-card reveal">
+          <div class="portrait-card__frame">
+            <img src="assets/profile.jpg" alt="웹 개발자 엄상희의 프로필 사진" width="307" height="442" />
+            <span class="portrait-card__label">Problem finder<br />→ Problem solver</span>
+            <span class="portrait-card__index">01 / 05</span>
+          </div>
+          <figcaption>
+            <span>엄상희</span>
+            <span>Java · Spring · Oracle</span>
+          </figcaption>
+        </figure>
+
+        <dl class="hero-stats reveal">
+          <div><dt>운영 경험</dt><dd><strong>4+</strong> years</dd></div>
+          <div><dt>개발 교육</dt><dd><strong>1,120</strong> hours</dd></div>
+          <div><dt>팀 프로젝트</dt><dd><strong>03</strong> cases</dd></div>
+          <div><dt>추천 전환 기여</dt><dd><strong>+3%</strong> CVR</dd></div>
+        </dl>
+
+        <div class="flow-strip" aria-label="업무 접근 방식">
+          <span>Observe</span><i>→</i><span>Define</span><i>→</i><span>Build</span><i>→</i><span>Verify</span>
+        </div>
+      </section>
+
+      <section class="projects section-dark" id="projects">
+        <div class="section-heading reveal">
+          <p class="section-label"><span>01</span> Featured projects</p>
+          <h2>기능보다 먼저<br /><em>흐름을 설계합니다.</em></h2>
+          <p class="section-summary">
+            사용자 행동, 운영 규칙, 데이터 상태가 하나의 서비스 안에서 끊기지 않도록 설계한 세 가지
+            프로젝트입니다.
+          </p>
+        </div>
+
+        <div class="project-list">
+          <article class="project-card project-card--sky reveal">
+            <div class="project-card__visual project-visual project-visual--sky" aria-hidden="true">
+              <div class="sky-board">
+                <span>ICN</span><i></i><span>NRT</span>
+                <small>SK 0718 · ON TIME</small>
+              </div>
+              <div class="ticket">
+                <span>BOARDING PASS</span>
+                <b>SEOUL → TOKYO</b>
+                <div><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <span class="visual-caption">SEARCH · BOOK · PAY · REFUND</span>
+            </div>
+            <div class="project-card__content">
+              <div class="project-card__topline"><span>01 / Web service</span><time>2026.06—07</time></div>
+              <h3>SKYROUTE</h3>
+              <p class="project-card__subtitle">항공사 예매 및 운항 관리 웹 서비스</p>
+              <p class="project-card__description">
+                항공사의 기준 정보와 운항 스케줄부터 사용자의 검색·예약·결제·취소·환불까지 하나의
+                데이터 흐름으로 연결했습니다.
+              </p>
+              <ul class="project-points">
+                <li><span>Role</span>기획·요구사항 정의, 예약·결제·환불, 공통 UI, 통합 테스트</li>
+                <li><span>Decision</span>예약·티켓·좌석·환불 상태를 단일 업무 흐름으로 동기화</li>
+                <li><span>Team</span>5인 팀 프로젝트</li>
+              </ul>
+              <div class="tech-tags" aria-label="사용 기술">
+                <span>Java</span><span>Spring Boot</span><span>MyBatis</span><span>Oracle</span><span>PortOne</span>
+              </div>
+              <button class="project-link" type="button" data-project-open="skyroute">
+                Case study 보기 <span>↗</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="project-card project-card--kick reveal">
+            <div class="project-card__visual project-visual project-visual--kick" aria-hidden="true">
+              <div class="pitch"><i></i><i></i><i></i><i></i><b></b></div>
+              <div class="chat-bubble chat-bubble--one">오늘 20:00<br /><strong>매칭 완료</strong></div>
+              <div class="chat-bubble chat-bubble--two"><small>NEW 03</small><br />최근 메시지부터 조회</div>
+              <span class="visual-caption">CLUB · MATCH · CHAT · ADMIN</span>
+            </div>
+            <div class="project-card__content">
+              <div class="project-card__topline"><span>02 / Web platform</span><time>2026.04—06</time></div>
+              <h3>KICK-TREFF</h3>
+              <p class="project-card__subtitle">아마추어 축구·풋살 매칭 및 팀 통합 관리 플랫폼</p>
+              <p class="project-card__description">
+                채팅방과 엑셀에 흩어진 동호회 운영을 클럽 관리, 경기 매칭, 선수 검색, 채팅과
+                고객센터로 통합했습니다.
+              </p>
+              <ul class="project-points">
+                <li><span>Role</span>PM·개발팀장, 클럽·관리자·고객센터·채팅, 공통 UI</li>
+                <li><span>Decision</span>전체 조회 대신 마지막 확인 메시지 이후 데이터만 갱신</li>
+                <li><span>Team</span>4인 팀 프로젝트</li>
+              </ul>
+              <div class="tech-tags" aria-label="사용 기술">
+                <span>Java</span><span>JSP/Servlet</span><span>JDBC</span><span>AJAX</span><span>Oracle</span>
+              </div>
+              <button class="project-link" type="button" data-project-open="kicktreff">
+                Case study 보기 <span>↗</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="project-card project-card--krd reveal">
+            <div class="project-card__visual project-visual project-visual--krd" aria-hidden="true">
+              <div class="process-map">
+                <span>공고</span><i>01</i><span>신청</span><i>02</i><span>평가</span><i>03</i><span>정산</span>
+              </div>
+              <div class="admin-console">
+                <small>ADM / ACCESS CONTROL</small>
+                <b>LOGICAL DELETE</b>
+                <div><span>USER</span><span>ROLE</span><span>STATUS</span></div>
+              </div>
+              <span class="visual-caption">AUTH · STATE · BUDGET · HISTORY</span>
+            </div>
+            <div class="project-card__content">
+              <div class="project-card__topline"><span>03 / Console system</span><time>2026.02—03</time></div>
+              <h3>K-RD Project</h3>
+              <p class="project-card__subtitle">국가 연구과제 관리 시스템</p>
+              <p class="project-card__description">
+                공고, 신청, 평가·선정, 진행과 예산 정산의 업무 절차를 권한과 상태 중심의 Java 콘솔
+                시스템으로 구현했습니다.
+              </p>
+              <ul class="project-points">
+                <li><span>Role</span>시스템 관리자 메뉴 전반 설계·구현</li>
+                <li><span>Decision</span>데이터 관계와 이력을 보존하기 위해 계정 상태 기반 논리 삭제</li>
+                <li><span>Team</span>5인 팀 프로젝트</li>
+              </ul>
+              <div class="tech-tags" aria-label="사용 기술">
+                <span>Java</span><span>JDBC</span><span>Oracle</span><span>SQL</span><span>Git</span>
+              </div>
+              <button class="project-link" type="button" data-project-open="krd">
+                Case study 보기 <span>↗</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="about" id="about">
+        <div class="section-heading reveal">
+          <p class="section-label"><span>02</span> About me</p>
+          <h2>문제를 발견하는 시각에<br /><em>구현력을 더했습니다.</em></h2>
+        </div>
+
+        <div class="about-story reveal">
+          <p class="about-story__lead">
+            운영 현장에서 발견한 문제를 데이터 흐름과 코드로 해결하는 Java 풀스택 개발자입니다.
+          </p>
+          <div class="about-story__copy">
+            <p>
+              4년 이상 소셜 데이터 정제, AI 학습 데이터 검수, 검색·광고 품질 관리를 수행하며
+              서비스의 결과는 데이터 기준과 일관성에서 시작된다는 점을 배웠습니다. 반복 업무를
+              AutoHotkey로 자동화하고, 오늘의집에서는 Taxonomy 정비와 토픽 분류 모델 구축을 지원해
+              추천 탭 구매 전환율 3% 향상에 기여했습니다.
+            </p>
+            <p>
+              문제를 발견하는 데서 그치지 않고 해결 구조를 직접 만들고 싶어 컴퓨터과학을 공부하고
+              1,120시간의 Java 클라우드 풀스택 교육을 이수했습니다. 기능을 빠르게 추가하는 것보다
+              업무 규칙과 데이터 관계를 먼저 이해하고, 예외 상황에서도 일관된 흐름을 만드는 데
+              집중합니다.
+            </p>
+            <p>
+              협업할 때는 요구사항과 공통 기준을 먼저 문서화하고 우선순위와 진행 상황을 공유합니다.
+              수천 건의 데이터를 검수하며 기른 꼼꼼함에 일정과 협업을 함께 고려하는 방식을
+              더했습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="strength-grid">
+          <article class="strength-card reveal">
+            <span class="strength-card__number">01</span><i class="strength-icon">⌕</i>
+            <h3>문제를 발견하는 시각</h3>
+            <p>반복 업무와 품질 이슈를 사용자·운영 관점에서 분석하고 문제의 기준을 구체화합니다.</p>
+          </article>
+          <article class="strength-card reveal">
+            <span class="strength-card__number">02</span><i class="strength-icon">⇄</i>
+            <h3>흐름을 연결하는 구현</h3>
+            <p>업무 규칙과 데이터 관계를 먼저 이해하고 상태 정합성과 예외 상황까지 설계합니다.</p>
+          </article>
+          <article class="strength-card reveal">
+            <span class="strength-card__number">03</span><i class="strength-icon">⌁</i>
+            <h3>기준을 만드는 협업</h3>
+            <p>요구사항, 공통 구조와 UI 기준을 문서화하고 팀의 진행 상황을 투명하게 공유합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="skills section-mist" id="skills">
+        <div class="section-heading section-heading--row reveal">
+          <div>
+            <p class="section-label"><span>03</span> Skills with evidence</p>
+            <h2>기술은 목록이 아니라<br /><em>해결한 문제로 증명합니다.</em></h2>
+          </div>
+          <p class="section-summary">
+            직접 구현한 기술과 교육·실습 경험을 구분했습니다. 각 기술이 실제로 사용된 프로젝트를
+            함께 확인할 수 있습니다.
+          </p>
+        </div>
+
+        <div class="skill-table reveal">
+          <article>
+            <div class="skill-table__category"><span>01</span><h3>Backend</h3></div>
+            <div class="skill-table__tools">Java · Spring Boot · Spring MVC · Spring Security · JSP/Servlet · MyBatis · JDBC</div>
+            <p>SKYROUTE의 검색·예약·결제·환불, KICK-TREFF의 클럽·관리자·채팅 기능</p>
+            <span class="evidence">PROJECT PROVEN</span>
+          </article>
+          <article>
+            <div class="skill-table__category"><span>02</span><h3>Database</h3></div>
+            <div class="skill-table__tools">Oracle 21c · SQL · PL/SQL</div>
+            <p>예약·티켓·좌석·환불 관계와 제약조건, 권한·상태 기반 쿼리와 논리 삭제</p>
+            <span class="evidence">PROJECT PROVEN</span>
+          </article>
+          <article>
+            <div class="skill-table__category"><span>03</span><h3>Frontend</h3></div>
+            <div class="skill-table__tools">HTML5 · CSS3 · JavaScript · Thymeleaf · jQuery/AJAX · Bootstrap</div>
+            <p>항공권 검색부터 결제까지의 화면 흐름, AJAX 폴링 채팅, 공통 UI 시스템</p>
+            <span class="evidence">PROJECT PROVEN</span>
+          </article>
+          <article>
+            <div class="skill-table__category"><span>04</span><h3>Quality & Team</h3></div>
+            <div class="skill-table__tools">Requirements · Validation · Exception Handling · Integration Test · Git/GitHub</div>
+            <p>공통 기준 문서화, 결제 상태 검증, 화면·URL·매핑 오류 디버깅과 협업 관리</p>
+            <span class="evidence">PROJECT PROVEN</span>
+          </article>
+          <article class="skill-table__training">
+            <div class="skill-table__category"><span>05</span><h3>Cloud & Delivery</h3></div>
+            <div class="skill-table__tools">AWS · Docker · GitHub Actions CI/CD</div>
+            <p>Java 클라우드 풀스택 교육과정에서 EC2, 컨테이너와 배포 자동화 구성 실습</p>
+            <span class="evidence evidence--training">TRAINING</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="experience" id="experience">
+        <div class="section-heading section-heading--row reveal">
+          <div>
+            <p class="section-label"><span>04</span> Experience & education</p>
+            <h2>데이터 운영에서<br /><em>서비스 개발까지.</em></h2>
+          </div>
+          <p class="section-summary">
+            품질 기준을 지키고 반복 이슈를 분석했던 경험이, 안정적인 비즈니스 로직을 설계하는 개발
+            방식으로 이어졌습니다.
+          </p>
+        </div>
+
+        <div class="career-layout">
+          <div class="career-column reveal">
+            <div class="column-title"><span>Career</span><small>Latest first</small></div>
+            <article class="timeline-item">
+              <time>2024.01 — 2025.12</time>
+              <div><h3>퍼솔켈리코리아</h3><p class="role">오늘의집 Search Operation팀 · 계약직</p>
+                <p>검색·광고 품질을 관리하고 Taxonomy 정비와 토픽 분류 모델 구축을 지원했습니다.</p>
+                <ul><li>상품 일 500–1,000건, 광고 일 800–3,000건 검수</li><li>추천 탭 구매 전환율 3% 향상에 기여</li></ul>
+              </div>
+            </article>
+            <article class="timeline-item">
+              <time>2023.09 — 2023.12</time>
+              <div><h3>인사이터</h3><p class="role">데이터 구축팀 · 계약직</p>
+                <p>AI 학습용 데이터 라벨링, 검수와 품질 관리를 담당했습니다.</p>
+                <ul><li>전력 사용량·음성 기반 3D 발화 얼굴 데이터 검수</li><li>오류 식별과 결과 정확성·일관성 확인</li></ul>
+              </div>
+            </article>
+            <article class="timeline-item">
+              <time>2021.06 — 2023.06</time>
+              <div><h3>뉴엔에이아이</h3><p class="role">운영팀 · 프리랜서</p>
+                <p>소셜 데이터 정제와 코카콜라 브랜드 이미지 대시보드를 운영했습니다.</p>
+                <ul><li>하루 평균 5,500–7,000건 데이터 처리</li><li>AutoHotkey로 반복 구간 자동화</li></ul>
+              </div>
+            </article>
+          </div>
+
+          <div class="education-column reveal">
+            <div class="column-title"><span>Education</span><small>Learning track</small></div>
+            <article class="education-card education-card--accent">
+              <span>2025.12 — 2026.07</span><h3>쌍용강북교육센터</h3>
+              <p>AWS & CI/CD 기반 Java 클라우드 Full-Stack 개발자 양성과정</p>
+              <strong>1,120시간 · 140일 수료</strong>
+            </article>
+            <article class="education-card">
+              <span>2025.03 — 재학 중</span><h3>한국방송통신대학교</h3>
+              <p>컴퓨터과학과</p><strong>4.0 / 4.5</strong>
+            </article>
+            <article class="education-card">
+              <span>2021.03 — 2024.08</span><h3>한국방송통신대학교</h3>
+              <p>경영학과 졸업</p>
+            </article>
+            <article class="education-card">
+              <span>2019.03 — 2021.02</span><h3>인덕대학교</h3>
+              <p>비즈니스중국어과 졸업</p><strong>3.97 / 4.5</strong>
+            </article>
+            <div class="certificate">
+              <span>Qualification</span><p>정보처리기사 <strong>필기 합격</strong></p><time>2026.03.11</time>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contact">
+        <div class="contact__orb" aria-hidden="true"><span>READY</span><span>TO BUILD</span></div>
+        <p class="section-label reveal"><span>05</span> Contact</p>
+        <h2 class="reveal">함께 해결할 문제와<br /><em>팀을 찾고 있습니다.</em></h2>
+        <p class="contact__copy reveal">
+          Java와 Spring 기반 웹 서비스 개발, 채용 및 프로젝트 관련 문의는 이메일로 연락해 주세요.
+        </p>
+        <div class="contact-actions reveal">
+          <a class="contact-link" href="mailto:luckie0725@gmail.com">
+            <small>Email</small><strong>luckie0725@gmail.com</strong><span>↗</span>
+          </a>
+          <a class="contact-link" href="https://github.com/furseal07" target="_blank" rel="noreferrer">
+            <small>GitHub</small><strong>github.com/furseal07</strong><span>↗</span>
+          </a>
+        </div>
+        <button class="copy-email reveal" type="button" data-copy-email="luckie0725@gmail.com">
+          이메일 주소 복사 <span>+</span>
+        </button>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Eom Sanghee</span>
+      <span>Java Full-Stack Developer</span>
+      <a href="#home">Back to top ↑</a>
+    </footer>
+
+    <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title">
+      <div class="project-dialog__shell">
+        <header class="project-dialog__header">
+          <div><span id="dialog-index">01 / CASE</span><h2 id="dialog-title">Project</h2><p id="dialog-subtitle"></p></div>
+          <button type="button" class="dialog-close" aria-label="프로젝트 상세 닫기"><span></span><span></span></button>
+        </header>
+        <div class="project-dialog__content" id="dialog-content"></div>
+      </div>
+    </dialog>
+
+    <div class="toast" role="status" aria-live="polite">이메일 주소를 복사했습니다.</div>
+  </body>
 </html>
