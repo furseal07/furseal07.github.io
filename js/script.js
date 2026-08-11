@@ -1,5 +1,71 @@
 document.documentElement.classList.add("js");
 
+const loader = document.querySelector("#site-loader");
+const loaderCount = document.querySelector("#loader-count");
+const loaderMessage = document.querySelector("#loader-message");
+const loaderProgress = document.querySelector("#loader-progress");
+const loaderProgressBar = loaderProgress?.querySelector(".loader__fill");
+const loaderPoints = [...document.querySelectorAll("[data-loader-point]")];
+const loaderMessages = [
+  "기획자에서 운영자로 . . .",
+  "운영자에서 개발자로 . . ."
+];
+
+const finishLoader = () => {
+  if (!loader) return;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  loader.classList.add("is-complete");
+  document.body.classList.remove("is-loading");
+  window.setTimeout(() => document.body.classList.add("is-ready"), reduceMotion ? 0 : 650);
+  window.setTimeout(() => loader.remove(), reduceMotion ? 50 : 950);
+};
+
+const startLoader = () => {
+  if (!loader || !loaderCount || !loaderMessage || !loaderProgress || !loaderProgressBar) {
+    document.body.classList.remove("is-loading");
+    document.body.classList.add("is-ready");
+    return;
+  }
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const duration = reduceMotion ? 500 : 6000;
+  let activeMessage = 0;
+  let startedAt;
+
+  const updateMessage = (nextMessage) => {
+    if (nextMessage === activeMessage) return;
+    activeMessage = nextMessage;
+    loaderMessage.classList.add("is-changing");
+    window.setTimeout(() => {
+      loaderMessage.textContent = loaderMessages[activeMessage];
+      loaderMessage.classList.remove("is-changing");
+    }, reduceMotion ? 0 : 180);
+  };
+
+  const tick = (timestamp) => {
+    startedAt ??= timestamp;
+    const progress = Math.min((timestamp - startedAt) / duration, 1);
+    const percent = Math.round(progress * 100);
+    const messageIndex = percent < 50 ? 0 : 1;
+
+    loaderCount.textContent = String(percent);
+    loaderProgress.setAttribute("aria-valuenow", String(percent));
+    loaderProgressBar.style.transform = `scaleX(${progress})`;
+    loaderPoints.forEach((point) => point.classList.toggle("is-reached", Number(point.dataset.loaderPoint) <= percent));
+    updateMessage(messageIndex);
+
+    if (progress < 1) {
+      window.requestAnimationFrame(tick);
+    } else {
+      window.setTimeout(finishLoader, reduceMotion ? 50 : 320);
+    }
+  };
+
+  window.requestAnimationFrame(tick);
+};
+
+startLoader();
+
 const header = document.querySelector(".site-header");
 const menuButton = document.querySelector(".menu-button");
 const mobileNav = document.querySelector(".mobile-nav");

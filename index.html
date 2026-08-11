@@ -18,20 +18,56 @@
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/script.js" defer></script>
   </head>
-  <body>
+  <body class="is-loading">
+    <div class="site-loader" id="site-loader" role="status" aria-live="polite" aria-label="포트폴리오를 불러오는 중">
+      <div class="loader__meta" aria-hidden="true">
+        <span>PORTFOLIO / 2026</span>
+        <span>INITIALIZING</span>
+      </div>
+      <div class="loader__content">
+        <div class="loader__headline">
+          <p class="loader__status">loading <span>. . .</span></p>
+          <p class="loader__count"><strong id="loader-count">0</strong><span>%</span></p>
+        </div>
+        <div
+          class="loader__journey"
+          id="loader-progress"
+          role="progressbar"
+          aria-label="페이지 로딩 진행률"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div class="loader__track" aria-hidden="true">
+            <span class="loader__fill"></span>
+            <i class="loader__point loader__point--start is-reached" data-loader-point="0"></i>
+            <i class="loader__point loader__point--middle" data-loader-point="50"></i>
+            <i class="loader__point loader__point--end" data-loader-point="100"></i>
+          </div>
+          <div class="loader__labels" aria-hidden="true">
+            <span>기획자</span>
+            <span>운영자</span>
+            <span>개발자</span>
+          </div>
+        </div>
+        <p class="loader__message" id="loader-message">기획자에서 운영자로 . . .</p>
+      </div>
+    </div>
+    <noscript><style>.site-loader { display: none; } body.is-loading { overflow: auto; }</style></noscript>
+
     <a class="skip-link" href="#main">본문으로 바로가기</a>
 
     <header class="site-header">
-      <a class="brand" href="#home" aria-label="엄상희 포트폴리오 홈">
-        <span>SH</span><i></i><small>WEB DEV</small>
+      <a class="brand boot-reveal boot-1" href="#home" aria-label="엄상희 포트폴리오 홈">
+        <span>SH</span><i></i><small>WEB DEVELOPER</small>
       </a>
-      <nav class="desktop-nav" aria-label="주요 메뉴">
+      <nav class="desktop-nav boot-reveal boot-2" aria-label="주요 메뉴">
         <a href="#projects">Projects</a>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
         <a href="#experience">Experience</a>
       </nav>
-      <div class="header-actions">
+      <div class="header-actions boot-reveal boot-3">
         <a class="header-contact" href="mailto:luckie0725@gmail.com">Let’s talk <span>↗</span></a>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">
           <span></span><span></span><span class="sr-only">메뉴 열기</span>
@@ -48,20 +84,20 @@
 
     <main id="main">
       <section class="hero" id="home">
-        <div class="hero__backdrop" aria-hidden="true">
+        <div class="hero__backdrop boot-reveal boot-fade boot-1" aria-hidden="true">
           <span>DATA</span><span>FLOW</span><span>CODE</span>
         </div>
         <div class="hero__content">
-          <div class="hero__eyebrow reveal">
+          <div class="hero__eyebrow reveal boot-reveal boot-2">
             <span class="status-dot"></span>
             Java Full-Stack Developer · Seoul, KR
           </div>
-          <h1 class="reveal">
+          <h1 class="reveal boot-reveal boot-3">
             운영에서 발견한 문제를,<br />
             <em>데이터 흐름과 코드로</em><br />
             해결합니다.
           </h1>
-          <div class="hero__intro reveal">
+          <div class="hero__intro reveal boot-reveal boot-4">
             <p>
               안녕하세요, <strong>엄상희</strong>입니다. 기획과 운영에서 쌓은 프로세스 이해를 바탕으로
               예외 상황에서도 일관된 웹 서비스를 만듭니다.
@@ -73,7 +109,7 @@
           </div>
         </div>
 
-        <figure class="portrait-card reveal">
+        <figure class="portrait-card reveal boot-reveal boot-5">
           <div class="portrait-card__frame">
             <img src="assets/profile.jpg" alt="웹 개발자 엄상희의 프로필 사진" width="307" height="442" />
             <span class="portrait-card__label">Problem finder<br />→ Problem solver</span>
@@ -85,14 +121,14 @@
           </figcaption>
         </figure>
 
-        <dl class="hero-stats reveal">
+        <dl class="hero-stats reveal boot-reveal boot-6">
           <div><dt>운영 경험</dt><dd><strong>4+</strong> years</dd></div>
           <div><dt>개발 교육</dt><dd><strong>1,120</strong> hours</dd></div>
           <div><dt>팀 프로젝트</dt><dd><strong>03</strong> cases</dd></div>
           <div><dt>추천 전환 기여</dt><dd><strong>+3%</strong> CVR</dd></div>
         </dl>
 
-        <div class="flow-strip" aria-label="업무 접근 방식">
+        <div class="flow-strip boot-reveal boot-7" aria-label="업무 접근 방식">
           <span>Observe</span><i>→</i><span>Define</span><i>→</i><span>Build</span><i>→</i><span>Verify</span>
         </div>
       </section>
