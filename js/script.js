@@ -73,8 +73,13 @@ const navLinks = [...document.querySelectorAll(".desktop-nav a, .mobile-nav a")]
 const sections = [...document.querySelectorAll("main section[id]")];
 const dialog = document.querySelector("#project-dialog");
 const dialogClose = dialog.querySelector(".dialog-close");
+const contactTrigger = document.querySelector("[data-contact-open]");
+const contactDialog = document.querySelector("#contact-dialog");
+const contactDialogClose = contactDialog.querySelector(".contact-dialog-close");
+const contactDialogToast = contactDialog.querySelector(".contact-dialog__toast");
 const toast = document.querySelector(".toast");
 let toastTimer;
+let activeToast;
 
 const projectData = {
   skyroute: {
@@ -179,15 +184,63 @@ dialogClose.addEventListener("click", closeDialog);
 dialog.addEventListener("click", (event) => { if (event.target === dialog) closeDialog(); });
 dialog.addEventListener("close", () => { document.body.style.overflow = ""; });
 
-document.querySelector("[data-copy-email]").addEventListener("click", async (event) => {
-  const email = event.currentTarget.dataset.copyEmail;
-  try { await navigator.clipboard.writeText(email); showToast("이메일 주소를 복사했습니다."); }
-  catch { showToast(email); }
+contactTrigger.addEventListener("click", () => {
+  contactDialog.showModal();
+  document.body.style.overflow = "hidden";
 });
 
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("is-visible");
+contactDialogClose.addEventListener("click", () => contactDialog.close());
+contactDialog.addEventListener("click", (event) => { if (event.target === contactDialog) contactDialog.close(); });
+contactDialog.addEventListener("close", () => {
+  document.body.style.overflow = "";
+  contactDialogToast.classList.remove("is-visible");
+});
+
+document.querySelectorAll("[data-copy-email]").forEach((button) => {
+  button.addEventListener("click", async (event) => {
+    const email = event.currentTarget.dataset.copyEmail;
+    const copyLabel = event.currentTarget.querySelector("[data-copy-label]");
+    const targetToast = event.currentTarget.closest("#contact-dialog") ? contactDialogToast : toast;
+
+    try {
+      await copyText(email);
+      showToast("이메일 주소를 복사했습니다.", targetToast);
+      if (copyLabel) {
+        copyLabel.textContent = "COPIED";
+        window.setTimeout(() => { copyLabel.textContent = "COPY"; }, 1600);
+      }
+    } catch {
+      showToast(email, targetToast);
+    }
+  });
+});
+
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const temporaryInput = document.createElement("textarea");
+  temporaryInput.value = text;
+  temporaryInput.setAttribute("readonly", "");
+  temporaryInput.style.position = "fixed";
+  temporaryInput.style.opacity = "0";
+  document.body.appendChild(temporaryInput);
+  temporaryInput.select();
+  const copied = document.execCommand("copy");
+  temporaryInput.remove();
+  if (!copied) throw new Error("Copy failed");
+}
+
+function showToast(message, targetToast = toast) {
+  if (activeToast && activeToast !== targetToast) activeToast.classList.remove("is-visible");
+  activeToast = targetToast;
+  targetToast.textContent = message;
+  targetToast.classList.add("is-visible");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 1800);
+  toastTimer = setTimeout(() => {
+    targetToast.classList.remove("is-visible");
+    if (activeToast === targetToast) activeToast = null;
+  }, 1800);
 }

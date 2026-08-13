@@ -68,7 +68,9 @@
         <a href="#experience">Experience</a>
       </nav>
       <div class="header-actions boot-reveal boot-3">
-        <a class="header-contact" href="mailto:luckie0725@gmail.com">Let’s talk <span>↗</span></a>
+        <button class="header-contact" type="button" data-contact-open aria-haspopup="dialog" aria-controls="contact-dialog">
+          Contact <span>+</span>
+        </button>
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">
           <span></span><span></span><span class="sr-only">메뉴 열기</span>
         </button>
@@ -438,6 +440,27 @@
           <button type="button" class="dialog-close" aria-label="프로젝트 상세 닫기"><span></span><span></span></button>
         </header>
         <div class="project-dialog__content" id="dialog-content"></div>
+      </div>
+    </dialog>
+
+    <dialog class="contact-dialog" id="contact-dialog" aria-labelledby="contact-dialog-title">
+      <div class="contact-dialog__shell">
+        <header class="contact-dialog__header">
+          <span>GET IN TOUCH</span>
+          <button type="button" class="dialog-close contact-dialog-close" aria-label="연락처 창 닫기"><span></span><span></span></button>
+        </header>
+        <div class="contact-dialog__content">
+          <p>CONTACT</p>
+          <h2 id="contact-dialog-title">함께 이야기해요.</h2>
+          <button class="contact-dialog__email" type="button" data-copy-email="luckie0725@gmail.com">
+            <span>Email</span>
+            <strong>luckie0725@gmail.com</strong>
+            <i data-copy-label>COPY</i>
+          </button>
+        </div>
+      </div>
+      <div class="contact-dialog__toast" role="status" aria-live="polite">
+        이메일 주소를 복사했습니다.
       </div>
     </dialog>
 
