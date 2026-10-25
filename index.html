@@ -47,6 +47,8 @@
         <ol class="loader__log" id="loader-log" aria-hidden="true"></ol>
         <p class="sr-only" id="loader-message">개발자 모드로 전환 중</p>
       </div>
+      <!-- 건너뛰기: 누르거나 Esc · Enter 키를 누르면 바로 페이지로 들어갑니다 -->
+      <button type="button" class="loader__skip" data-loader-skip>SKIP <span aria-hidden="true">▶▶</span><small>Esc</small></button>
     </div>
     <noscript><style>.site-loader { display: none; } body.is-loading { overflow: auto; }</style></noscript>
 
@@ -84,48 +86,58 @@
     <main id="main">
       <!-- ================= 페이지 1 · 요약(Summary): 한 줄 소개 + 프로젝트 바로가기 + 개발자 소개 + 연락 ================= -->
       <div class="page" id="page-home" data-page="home">
-      <!-- 첫 화면: 퀘스트 선택 화면. 한 줄 소개와 함께 프로젝트 세 개를 바로 고를 수 있는 퀘스트 칸을 보여 줍니다. -->
+      <!-- 첫 화면: 자기소개 사이트와 같은 캐릭터창(왼쪽 개발자 캐릭터 · 오른쪽 대사) → 개발자 상태창(요약) → 프로젝트 선택 순서로 나타납니다. -->
       <section class="hero" id="home">
-        <div class="hero__content window boot-reveal boot-2">
-          <p class="hero__eyebrow">
-            <span class="status-dot" aria-hidden="true"></span>
-            DEVELOPER PORTFOLIO · Java Full-Stack · <b>3차 전직 완료</b>
-          </p>
-          <h1>
-            운영에서 발견한 문제를,
-            <em>데이터 흐름과 코드로</em> 해결합니다.
-          </h1>
-          <p class="hero__intro">
-            팀 프로젝트 세 건에서 무엇을 만들었고, 어떤 기준으로 설계를 결정했고, 어떻게 검증했는지를
-            모았습니다. 경력·학력 같은 캐릭터 정보는
-            <a href="https://furseal07.github.io/about-me/">자기소개 페이지</a>에 있습니다.
-          </p>
-          <dl class="hero-stats">
-            <div class="is-gold"><dt>클리어한 퀘스트</dt><dd><strong>03</strong> projects</dd></div>
-            <div class="is-mint"><dt>프로젝트 기간</dt><dd><strong>2026</strong> 02 — 07</dd></div>
-            <div class="is-sky"><dt>주 무기</dt><dd><strong>Java</strong> Spring · Oracle</dd></div>
-            <div class="is-rose"><dt>맡은 역할</dt><dd><strong>PM</strong> 기획 · 구현 · 테스트</dd></div>
-          </dl>
+        <div class="char-window">
+          <!-- 캐릭터: 자기소개 사이트 캐릭터의 후드 집업 버전. 손을 흔들다 가끔 눈을 깜빡이고, 누르면 웃어요. (assets/dev-portrait-frames.png 6장) -->
+          <button type="button" class="char-portrait" id="devPortrait" aria-label="엄상희 개발자 캐릭터 — 누르면 웃어요">
+            <span class="char-portrait__sprite" aria-hidden="true"></span>
+          </button>
+          <div class="char-dialogue window">
+            <p class="char-dialogue__name">엄상희 <span>· Java Full-Stack Developer</span></p>
+            <!-- 대사는 글자가 한 자씩 찍히듯 나타납니다 (js/script.js). 화면 낭독기에는 sr-only 문장이 읽힙니다. -->
+            <h1 class="char-dialogue__text">
+              <span class="sr-only">운영에서 발견한 문제를, 데이터 흐름과 코드로 해결합니다.</span>
+              <span class="char-dialogue__typed" id="devDialogue" aria-hidden="true">운영에서 발견한 문제를, <em>데이터 흐름과 코드로</em> 해결합니다.</span>
+            </h1>
+            <div class="char-dialogue__links">
+              <a class="char-link" href="https://github.com/furseal07" target="_blank" rel="noreferrer"><b>GitHub</b> github.com/furseal07 <span aria-hidden="true">↗</span></a>
+              <a class="char-link char-link--about" href="https://furseal07.github.io/about-me/"><b>About me</b> 자기소개 페이지 <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
         </div>
 
-        <div class="quest-select boot-reveal boot-3" aria-label="프로젝트 바로가기">
-          <p class="quest-select__title"><span>SELECT QUEST</span> 프로젝트를 고르세요</p>
-          <a class="quest-tile window is-sky" href="#project-skyroute" data-page-link="projects">
-            <span class="quest-tile__no">QUEST 01</span>
+        <!-- 개발자 상태창: 프로젝트 · 주력 기술 · 개발 기간 · 실무/교육 · 학력 · 자격증 요약 -->
+        <section class="dev-status window cascade cascade--late" style="--i:0" aria-labelledby="dev-status-title">
+          <p class="dev-status__title" id="dev-status-title"><span>STATUS</span> 개발자 요약</p>
+          <dl class="dev-status__grid">
+            <div class="cascade cascade--late is-gold" style="--i:1"><dt>프로젝트</dt><dd><strong>3건</strong><span>팀 개발 프로젝트 · 세 건 모두 데모 공개</span></dd></div>
+            <div class="cascade cascade--late is-mint" style="--i:2"><dt>주력 기술</dt><dd><strong>Java · Spring Boot</strong><span>JSP/Servlet · MyBatis · JDBC · Oracle</span></dd></div>
+            <div class="cascade cascade--late is-sky" style="--i:3"><dt>개발 참여 기간</dt><dd><strong>약 18주</strong><span>2026.02 – 2026.07 · 프로젝트 3건 합산</span></dd></div>
+            <div class="cascade cascade--late is-rose" style="--i:4"><dt>실무 · 교육</dt><dd><strong>데이터 운영 4년+</strong><span>오늘의집 검색·광고 품질 관리 외 · Java 풀스택 과정 1,120h 수료</span></dd></div>
+            <div class="cascade cascade--late is-violet" style="--i:5"><dt>학력</dt><dd><strong>컴퓨터과학과 재학</strong><span>한국방송통신대학교 · 학점 4.0 / 4.5 (경영학 학사)</span></dd></div>
+            <div class="cascade cascade--late is-gold" style="--i:6"><dt>자격증</dt><dd><strong>정보처리기사</strong><span>필기 합격 · 2026.03 · 한국산업인력공단</span></dd></div>
+          </dl>
+        </section>
+
+        <div class="quest-select" aria-label="프로젝트 바로가기">
+          <p class="quest-select__title cascade cascade--late" style="--i:7"><span>SELECT PROJECT</span> 프로젝트를 고르세요</p>
+          <a class="quest-tile window cascade cascade--late is-sky" href="#project-skyroute" data-page-link="projects" style="--i:8">
+            <span class="quest-tile__no">PROJECT 01</span>
             <strong>SKYROUTE</strong>
             <span class="quest-tile__desc">항공사 예매 · 운항 관리 웹 서비스</span>
             <span class="quest-tile__meta"><time>2026.06.10 ~ 07.28</time> · 5인 · Spring Boot</span>
             <span class="quest-tile__go" aria-hidden="true">▶</span>
           </a>
-          <a class="quest-tile window is-mint" href="#project-kicktreff" data-page-link="projects">
-            <span class="quest-tile__no">QUEST 02</span>
+          <a class="quest-tile window cascade cascade--late is-mint" href="#project-kicktreff" data-page-link="projects" style="--i:9">
+            <span class="quest-tile__no">PROJECT 02</span>
             <strong>KICK-TREFF</strong>
             <span class="quest-tile__desc">축구·풋살 매칭 · 팀 관리 플랫폼</span>
             <span class="quest-tile__meta"><time>2026.04.17 ~ 06.02</time> · 4인 · JSP/Servlet</span>
             <span class="quest-tile__go" aria-hidden="true">▶</span>
           </a>
-          <a class="quest-tile window is-violet" href="#project-krd" data-page-link="projects">
-            <span class="quest-tile__no">QUEST 03</span>
+          <a class="quest-tile window cascade cascade--late is-violet" href="#project-krd" data-page-link="projects" style="--i:10">
+            <span class="quest-tile__no">PROJECT 03</span>
             <strong>K-RD Project</strong>
             <span class="quest-tile__desc">국가 연구과제 관리 시스템</span>
             <span class="quest-tile__meta"><time>2026.02.11 ~ 03.12</time> · 5인 · Java 콘솔</span>
@@ -135,81 +147,30 @@
       </section>
 
 
-      <!-- 개발자 소개: 어떤 개발자인지(이야기)와 일하는 방식 세 가지(패시브 스킬) -->
-      <section class="about" id="about">
-        <div class="section-heading reveal">
-          <p class="section-label"><span>ABOUT</span> 개발자 소개</p>
-          <h2>문제를 발견하는 시각에 <em>구현력을 더했습니다.</em></h2>
-        </div>
-        <div class="about-story window reveal">
-          <p class="about-story__lead">
-            운영 현장에서 발견한 문제를 데이터 흐름과 코드로 해결하는 Java 풀스택 개발자입니다.
-          </p>
-          <div class="about-story__copy">
-            <p>
-              4년 넘게 소셜 데이터 정제, AI 학습 데이터 검수, 검색·광고 품질 관리를 하며 서비스의
-              결과는 데이터 기준과 일관성에서 시작된다는 점을 배웠습니다. 하루 5,500~7,000건의 소셜
-              데이터를 다루던 반복 구간은 AutoHotkey로 자동화했고, 오늘의집 Search Operation 팀에서는
-              Taxonomy 정비와 토픽 분류 모델 구축을 지원해 추천 탭 구매 전환율 3% 향상에 기여했습니다.
-            </p>
-            <p>
-              그 과정에서 문제를 발견하는 것과 해결하는 것의 차이를 체감했고, 해결 구조를 직접 만들기 위해
-              컴퓨터과학을 공부하며 1,120시간의 Java 클라우드 풀스택 과정을 이수했습니다. 기능을 빠르게
-              늘리기보다 업무 규칙과 데이터 관계를 먼저 이해하고, 예외 상황에서도 일관된 흐름을 만드는 데
-              집중합니다.
-            </p>
-          </div>
-        </div>
-        <!-- 전직 루트: 운영 → 전공 → 교육 → 프로젝트. 자세한 경력·학력은 자기소개 페이지에 있습니다. -->
-        <ol class="class-route window reveal" aria-label="개발자가 되기까지">
-          <li class="is-gold"><small>CLASS 1 · 2021—2025</small><b>데이터 운영</b><span>소셜 데이터 정제 · 학습 데이터 검수 · 검색/광고 품질 관리</span></li>
-          <li class="is-mint"><small>CLASS 2 · 2025—</small><b>컴퓨터과학 전공</b><span>한국방송통신대학교 컴퓨터과학과 재학 · 학점 4.0 / 4.5</span></li>
-          <li class="is-sky"><small>CLASS 3 · 2025.12—2026.07</small><b>Java 풀스택 과정</b><span>AWS &amp; CI/CD 기반 Java 클라우드 Full-Stack · 1,120시간</span></li>
-          <li class="is-rose"><small>NOW · 2026</small><b>개발자</b><span>팀 프로젝트 3건 클리어 · 정보처리기사 필기 합격</span></li>
-        </ol>
-        <div class="strength-grid">
-          <article class="strength-card window is-gold reveal">
-            <span class="strength-card__number">PASSIVE 01</span><i class="strength-icon" aria-hidden="true">⌕</i>
-            <h3>문제를 발견하는 시각</h3>
-            <p>반복 업무와 품질 이슈를 사용자·운영 관점에서 분석하고 문제의 기준을 구체화합니다.</p>
-          </article>
-          <article class="strength-card window is-mint reveal">
-            <span class="strength-card__number">PASSIVE 02</span><i class="strength-icon" aria-hidden="true">⇄</i>
-            <h3>흐름을 연결하는 구현</h3>
-            <p>업무 규칙과 데이터 관계를 먼저 이해하고, 작은 기능도 상태 정합성과 예외 처리·테스트까지 책임집니다.</p>
-          </article>
-          <article class="strength-card window is-sky reveal">
-            <span class="strength-card__number">PASSIVE 03</span><i class="strength-icon" aria-hidden="true">✎</i>
-            <h3>기준을 만드는 협업</h3>
-            <p>요구사항, 공통 구조와 UI 기준을 문서화하고 팀의 진행 상황을 매일 기록해 공유합니다.</p>
-            <a class="strength-card__link" href="#skyroute-docs" data-page-link="projects">SKYROUTE 협업 문서 보기 ▶</a>
-          </article>
-        </div>
-      </section>
       </div>
 
       <!-- ================= 페이지 2 · 프로젝트(Projects) ================= -->
       <div class="page" id="page-projects" data-page="projects" hidden>
-      <!-- 프로젝트: 완료한 퀘스트 기록. 처음엔 완료한 퀘스트 목록이 보이고, 하나를 누르면 그 프로젝트의 상세 정보 화면으로 바뀝니다.
-           상세 화면에서는 '퀘스트 목록으로' 또는 이전 · 다음 퀘스트로 이동합니다. 주소는 #projects(목록), #project-이름(상세). -->
+      <!-- 프로젝트: 완료한 프로젝트 기록. 처음엔 완료한 프로젝트 목록이 보이고, 하나를 누르면 그 프로젝트의 상세 정보 화면으로 바뀝니다.
+           상세 화면에서는 '프로젝트 목록으로' 또는 이전 · 다음 프로젝트로 이동합니다. 주소는 #projects(목록), #project-이름(상세). -->
       <section class="projects" id="projects">
         <div class="section-heading reveal">
-          <p class="section-label"><span>QUEST LOG</span> Completed quests · 완료한 퀘스트</p>
+          <p class="section-label"><span>PROJECT LOG</span> Completed projects · 완료한 프로젝트</p>
           <h2>기능보다 먼저 <em>흐름을 설계합니다.</em></h2>
           <p class="section-summary">
             사용자 행동, 운영 규칙, 데이터 상태가 하나의 서비스 안에서 끊기지 않도록 설계한 세 가지
-            프로젝트입니다. 퀘스트를 누르면 상세 기록이 열립니다.
+            프로젝트입니다. 프로젝트를 누르면 상세 기록이 열립니다.
           </p>
         </div>
 
         <div class="quest-log window reveal" id="quest-log">
-          <p class="quest-log__title"><span>COMPLETED QUESTS</span><b>3 / 3 CLEAR</b></p>
+          <p class="quest-log__title"><span>COMPLETED PROJECTS</span><b>3 / 3 CLEAR</b></p>
           <ol class="quest-log__list">
             <li>
               <a class="quest-entry is-sky" href="#project-skyroute" data-page-link="projects">
                 <span class="quest-entry__icon" aria-hidden="true">✈</span>
                 <span class="quest-entry__main">
-                  <span class="quest-entry__no">QUEST 01 · Web service</span>
+                  <span class="quest-entry__no">PROJECT 01 · Web service</span>
                   <strong>SKYROUTE</strong>
                   <span class="quest-entry__desc">항공사 예매 및 운항 관리 웹 서비스</span>
                   <span class="quest-entry__key"><b>핵심</b>좌석 중복 예약은 DB 제약으로 차단, 결제·환불 금액은 서버에서 재검증</span>
@@ -228,7 +189,7 @@
               <a class="quest-entry is-mint" href="#project-kicktreff" data-page-link="projects">
                 <span class="quest-entry__icon" aria-hidden="true">⚽</span>
                 <span class="quest-entry__main">
-                  <span class="quest-entry__no">QUEST 02 · Web platform</span>
+                  <span class="quest-entry__no">PROJECT 02 · Web platform</span>
                   <strong>KICK-TREFF</strong>
                   <span class="quest-entry__desc">아마추어 축구·풋살 매칭 및 팀 통합 관리 플랫폼</span>
                   <span class="quest-entry__key"><b>핵심</b>마지막 확인 이후 메시지만 조회하는 채팅</span>
@@ -247,7 +208,7 @@
               <a class="quest-entry is-violet" href="#project-krd" data-page-link="projects">
                 <span class="quest-entry__icon" aria-hidden="true">▤</span>
                 <span class="quest-entry__main">
-                  <span class="quest-entry__no">QUEST 03 · Console system</span>
+                  <span class="quest-entry__no">PROJECT 03 · Console system</span>
                   <strong>K-RD Project</strong>
                   <span class="quest-entry__desc">국가 연구과제 관리 시스템</span>
                   <span class="quest-entry__key"><b>핵심</b>이력을 보존하는 계정 상태 기반 논리 삭제</span>
@@ -267,12 +228,12 @@
 
         <div class="quest-details">
           <article class="quest-detail project-card window project-card--sky" id="project-skyroute" hidden>
-            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 퀘스트 목록으로</a>
+            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 프로젝트 목록으로</a>
             <header class="project-card__head">
               <div class="project-card__ident">
                 <span class="project-card__icon" aria-hidden="true">✈</span>
                 <div>
-                  <p class="project-card__topline"><span>QUEST 01</span></p>
+                  <p class="project-card__topline"><span>PROJECT 01</span></p>
                   <h3>SKYROUTE</h3>
                   <p class="project-card__subtitle">항공사 예매 및 운항 관리 웹 서비스</p>
                 </div>
@@ -391,7 +352,7 @@ if (cancelledTickets != tickets.size())
                 </article>
               </div>
             </section>
-            <!-- 퀘스트 상세 기록: 문제 · 나의 기여 · 설계 결정 · 검증(협업) · 회고 · 기술 — js/script.js 의 projectData 에서 채웁니다 -->
+            <!-- 프로젝트 상세 기록: 문제 · 나의 기여 · 설계 결정 · 검증(협업) · 회고 · 기술 — js/script.js 의 projectData 에서 채웁니다 -->
             <div class="quest-detail__case tab-panel" id="sky-case" role="tabpanel" aria-labelledby="sky-tab-case" data-case="skyroute" hidden></div>
             <!-- 트러블슈팅: 상황(S) · 문제(T) · 해결(A) · 결과(R) 순서로 세 가지 -->
             <section class="trouble tab-panel" id="sky-trouble" role="tabpanel" aria-labelledby="sky-tab-trouble" hidden>
@@ -459,18 +420,18 @@ if (cancelledTickets != tickets.size())
                 </a>
               </div>
             </section>
-              <nav class="quest-detail__nav" aria-label="다른 퀘스트">
+              <nav class="quest-detail__nav" aria-label="다른 프로젝트">
                 <span></span>
-                <a href="#project-kicktreff" data-page-link="projects">다음 퀘스트 · KICK-TREFF ▶</a>
+                <a href="#project-kicktreff" data-page-link="projects">다음 프로젝트 · KICK-TREFF ▶</a>
               </nav>
           </article>
           <article class="quest-detail project-card window project-card--kick" id="project-kicktreff" hidden>
-            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 퀘스트 목록으로</a>
+            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 프로젝트 목록으로</a>
             <header class="project-card__head">
               <div class="project-card__ident">
                 <span class="project-card__icon" aria-hidden="true">⚽</span>
                 <div>
-                  <p class="project-card__topline"><span>QUEST 02</span></p>
+                  <p class="project-card__topline"><span>PROJECT 02</span></p>
                   <h3>KICK-TREFF</h3>
                   <p class="project-card__subtitle">아마추어 축구·풋살 매칭 및 팀 통합 관리 플랫폼</p>
                 </div>
@@ -588,7 +549,7 @@ if (newStatus == 3 &amp;&amp; countActiveMatches(conn, stadiumNum) &gt; 0)
                 </article>
               </div>
             </section>
-            <!-- 퀘스트 상세 기록: 문제 · 나의 기여 · 설계 결정 · 협업 · 회고 — js/script.js 의 projectData 에서 채웁니다 -->
+            <!-- 프로젝트 상세 기록: 문제 · 나의 기여 · 설계 결정 · 협업 · 회고 — js/script.js 의 projectData 에서 채웁니다 -->
             <div class="quest-detail__case tab-panel" id="kick-case" role="tabpanel" aria-labelledby="kick-tab-case" data-case="kicktreff" hidden></div>
             <!-- 트러블슈팅: 상황(S) · 문제(T) · 해결(A) · 결과(R) 순서로 세 가지 -->
             <section class="trouble tab-panel" id="kick-trouble" role="tabpanel" aria-labelledby="kick-tab-trouble" hidden>
@@ -626,18 +587,18 @@ if (newStatus == 3 &amp;&amp; countActiveMatches(conn, stadiumNum) &gt; 0)
                 </article>
               </div>
             </section>
-              <nav class="quest-detail__nav" aria-label="다른 퀘스트">
-                <a href="#project-skyroute" data-page-link="projects">◀ 이전 퀘스트 · SKYROUTE</a>
-                <a href="#project-krd" data-page-link="projects">다음 퀘스트 · K-RD Project ▶</a>
+              <nav class="quest-detail__nav" aria-label="다른 프로젝트">
+                <a href="#project-skyroute" data-page-link="projects">◀ 이전 프로젝트 · SKYROUTE</a>
+                <a href="#project-krd" data-page-link="projects">다음 프로젝트 · K-RD Project ▶</a>
               </nav>
           </article>
           <article class="quest-detail project-card window project-card--krd" id="project-krd" hidden>
-            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 퀘스트 목록으로</a>
+            <a class="quest-detail__back" href="#projects" data-page-link="projects">◀ 프로젝트 목록으로</a>
             <header class="project-card__head">
               <div class="project-card__ident">
                 <span class="project-card__icon" aria-hidden="true">▤</span>
                 <div>
-                  <p class="project-card__topline"><span>QUEST 03</span></p>
+                  <p class="project-card__topline"><span>PROJECT 03</span></p>
                   <h3>K-RD Project</h3>
                   <p class="project-card__subtitle">국가 연구과제 관리 시스템 (Java 콘솔 프로그램)</p>
                 </div>
@@ -763,7 +724,7 @@ conn.commit();</code></pre>
                 </article>
               </div>
             </section>
-            <!-- 퀘스트 상세 기록: js/script.js 의 projectData 에서 채웁니다 -->
+            <!-- 프로젝트 상세 기록: js/script.js 의 projectData 에서 채웁니다 -->
             <div class="quest-detail__case tab-panel" id="krd-case" role="tabpanel" aria-labelledby="krd-tab-case" data-case="krd" hidden></div>
             <!-- 트러블슈팅: 상황(S) · 문제(T) · 해결(A) · 결과(R) 순서로 세 가지 -->
             <section class="trouble tab-panel" id="krd-trouble" role="tabpanel" aria-labelledby="krd-tab-trouble" hidden>
@@ -801,8 +762,8 @@ conn.commit();</code></pre>
                 </article>
               </div>
             </section>
-              <nav class="quest-detail__nav" aria-label="다른 퀘스트">
-                <a href="#project-kicktreff" data-page-link="projects">◀ 이전 퀘스트 · KICK-TREFF</a>
+              <nav class="quest-detail__nav" aria-label="다른 프로젝트">
+                <a href="#project-kicktreff" data-page-link="projects">◀ 이전 프로젝트 · KICK-TREFF</a>
                 <span></span>
               </nav>
           </article>

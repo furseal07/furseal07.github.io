@@ -15,13 +15,31 @@ const loaderSteps = [
   [100, "개발자 모드 전환 완료!"]
 ];
 
+// 로딩 중에는 휠 · 터치 · 키보드 스크롤을 막아 뒤의 페이지가 비쳐 보이지 않게 합니다.
+const blockScroll = (event) => event.preventDefault();
+const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
+const blockScrollKeys = (event) => { if (SCROLL_KEYS.has(event.key)) event.preventDefault(); };
+const lockScroll = (on) => {
+  const method = on ? "addEventListener" : "removeEventListener";
+  window[method]("wheel", blockScroll, { passive: false });
+  window[method]("touchmove", blockScroll, { passive: false });
+  window[method]("keydown", blockScrollKeys);
+  document.documentElement.classList.toggle("is-loading", on);
+};
+
+let loaderDone = false;
 const finishLoader = () => {
-  if (!loader) return;
+  if (!loader || loaderDone) return;
+  loaderDone = true;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo(0, 0);
+  lockScroll(false);
   loader.classList.add("is-complete");
   document.body.classList.remove("is-loading");
-  window.setTimeout(() => document.body.classList.add("is-ready"), reduceMotion ? 0 : 650);
-  window.setTimeout(() => loader.remove(), reduceMotion ? 50 : 950);
+  window.setTimeout(() => document.body.classList.add("is-ready"), reduceMotion ? 0 : 450);
+  // 위쪽 첫 화면이 다 뜬 뒤에 아래 내용이 차례로 나타나게 합니다
+  window.setTimeout(() => enableReveal(), reduceMotion ? 0 : 1000);
+  window.setTimeout(() => loader.remove(), reduceMotion ? 50 : 700);
 };
 
 // 이 탭에서 이미 한 번 봤다면(새로고침 등) 로딩 화면을 건너뜁니다.
@@ -37,11 +55,26 @@ const startLoader = () => {
     loader?.remove();
     document.body.classList.remove("is-loading");
     document.body.classList.add("is-ready");
+    window.setTimeout(() => enableReveal(), 550);
     return;
   }
 
+  // 새로고침 때 브라우저가 이전 스크롤 위치로 되돌리지 않게 맨 위에서 시작합니다
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+  lockScroll(true);
+
+  // 건너뛰기: SKIP 버튼, 또는 Esc · Enter 키
+  const skipButton = loader.querySelector("[data-loader-skip]");
+  skipButton?.addEventListener("click", finishLoader);
+  const skipByKey = (event) => {
+    if (loaderDone) { window.removeEventListener("keydown", skipByKey); return; }
+    if (event.key === "Escape" || event.key === "Enter") { event.preventDefault(); finishLoader(); }
+  };
+  window.addEventListener("keydown", skipByKey);
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const duration = reduceMotion ? 500 : 6000;
+  const duration = reduceMotion ? 400 : 4000;   // 게이지가 차는 시간 (ms)
   const blocks = Array.from({ length: LOADER_BLOCKS }, () => {
     const block = document.createElement("i");
     loaderProgress.appendChild(block);
@@ -64,6 +97,7 @@ const startLoader = () => {
   };
 
   const tick = (timestamp) => {
+    if (loaderDone) return;   // 건너뛰기를 누르면 멈춥니다
     startedAt ??= timestamp;
     const progress = Math.min((timestamp - startedAt) / duration, 1);
     const percent = Math.round(progress * 100);
@@ -79,7 +113,7 @@ const startLoader = () => {
     if (progress < 1) {
       window.requestAnimationFrame(tick);
     } else {
-      window.setTimeout(finishLoader, reduceMotion ? 50 : 600);   // 완료 줄을 잠깐 보여 준 뒤 닫습니다
+      window.setTimeout(finishLoader, reduceMotion ? 50 : 350);   // 완료 줄을 잠깐 보여 준 뒤 닫습니다
     }
   };
 
@@ -156,14 +190,31 @@ mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click",
   mobileNav.hidden = true;
 }));
 
+// 스크롤해서 보이는 순간 나타나는 효과. 로딩 화면과 첫 화면 등장이 끝나기 전에는 시작하지 않습니다.
+let revealReady = false;
 const revealObserver = new IntersectionObserver((entries) => {
+  if (!revealReady) return;
+  let order = 0;
   entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("is-visible");
-      revealObserver.unobserve(entry.target);
-    }
+    if (!entry.isIntersecting) return;
+    const element = entry.target;
+    element.style.transitionDelay = `${Math.min(order, 4) * 0.12}s`;   // 한꺼번에 보이면 위에서부터 차례로
+    order += 1;
+    element.classList.add("is-visible");
+    revealObserver.unobserve(element);
+    window.setTimeout(() => { element.style.transitionDelay = ""; }, 1400);
   });
 }, { threshold: .08, rootMargin: "0px 0px -8%" });
+
+function enableReveal() {
+  if (revealReady) return;
+  revealReady = true;
+  // 이미 화면 안에 있던 요소도 다시 확인하도록 관찰을 새로 겁니다
+  document.querySelectorAll(".reveal:not(.is-visible)").forEach((element) => {
+    revealObserver.unobserve(element);
+    revealObserver.observe(element);
+  });
+}
 
 document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
 
@@ -183,7 +234,7 @@ const questLog = document.querySelector("#quest-log");
 const questDetails = [...document.querySelectorAll(".quest-detail")];
 
 function showPage(name, target) {
-  // 프로젝트 페이지: 퀘스트 상세(#project-이름)를 고르면 목록 대신 그 상세 화면만, 아니면 목록만 보여 줍니다
+  // 프로젝트 페이지: 프로젝트 상세(#project-이름)를 고르면 목록 대신 그 상세 화면만, 아니면 목록만 보여 줍니다
   // (#skyroute-docs 처럼 상세 화면 안쪽을 고르면 그 상세 화면을 열고 그 위치로 내려갑니다)
   const detail = target ? target.closest(".quest-detail") : null;
   if (name === "projects" && questLog) {
@@ -237,7 +288,7 @@ document.querySelectorAll("[data-scroll-top]").forEach((link) => {
 const initialRoute = pageFromHash(location.hash);
 showPage(initialRoute.page, initialRoute.target);
 
-// 퀘스트 상세 기록: projectData 의 문제 · 나의 기여 · 설계 결정 · 검증 · 회고를 각 상세 화면 아래에 채웁니다.
+// 프로젝트 상세 기록: projectData 의 문제 · 나의 기여 · 설계 결정 · 검증 · 회고를 각 상세 화면 아래에 채웁니다.
 // (기술 목록은 상세 화면 위쪽 기술 칸에 이미 있으므로 넣지 않습니다)
 document.querySelectorAll("[data-case]").forEach((container) => {
   const project = projectData[container.dataset.case];
@@ -394,3 +445,68 @@ function showToast(message, targetToast = toast) {
     if (activeToast === targetToast) activeToast = null;
   }, 1800);
 }
+// 캐릭터 대사: 첫 화면이 나타난 뒤 글자가 한 자씩 찍히고, 다 찍히면 아래 칸들(상태창 · 프로젝트)이 차례로 나타납니다.
+// 대사 창을 누르면 바로 전체 문장을 보여 줍니다. (움직임 줄이기 설정이면 처음부터 전체 표시)
+(() => {
+  const target = document.querySelector("#devDialogue");
+  const showRest = () => document.body.classList.add("intro-done");
+  if (!target || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { showRest(); return; }
+  const original = target.innerHTML;
+  // 다 쓴 문장을 보이지 않게 미리 깔아 두어, 타이핑 중에도 창 높이가 바뀌지 않게 합니다
+  const ghost = document.createElement("span");
+  ghost.className = "char-dialogue__ghost";
+  ghost.setAttribute("aria-hidden", "true");
+  ghost.innerHTML = original;
+  target.before(ghost);
+  target.classList.add("is-overlay");
+  // 글자 조각: [글자, 강조 여부]
+  const parts = [...target.childNodes].map((node) => [node.textContent, node.nodeName === "EM"]);
+  target.textContent = "";
+  target.classList.add("is-typing");
+  let timer;
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(timer);
+    target.innerHTML = original;
+    window.setTimeout(showRest, 250);
+    window.setTimeout(() => target.classList.remove("is-typing"), 1600);
+  };
+  const start = () => {
+    let partIndex = 0;
+    let charIndex = 0;
+    let holder = null;
+    const step = () => {
+      if (finished) return;
+      if (partIndex >= parts.length) { finish(); return; }
+      const [text, emphasized] = parts[partIndex];
+      if (charIndex === 0) holder = emphasized ? target.appendChild(document.createElement("em")) : target;
+      holder.append(text[charIndex]);
+      charIndex += 1;
+      if (charIndex >= text.length) { partIndex += 1; charIndex = 0; }
+      timer = window.setTimeout(step, 48);
+    };
+    step();
+  };
+  document.querySelector(".char-dialogue")?.addEventListener("click", (event) => {
+    if (!event.target.closest("a")) finish();
+  });
+  const waitForReady = () => {
+    if (document.body.classList.contains("is-ready")) window.setTimeout(start, 300);   // 캐릭터창은 처음부터 떠 있고, 대사만 찍힙니다
+    else window.requestAnimationFrame(waitForReady);
+  };
+  waitForReady();
+})();
+
+// 캐릭터를 누르면 잠깐 웃어요
+(() => {
+  const portrait = document.querySelector("#devPortrait");
+  if (!portrait) return;
+  let timer;
+  portrait.addEventListener("click", () => {
+    portrait.classList.add("is-laughing");
+    clearTimeout(timer);
+    timer = setTimeout(() => portrait.classList.remove("is-laughing"), 1400);
+  });
+})();
