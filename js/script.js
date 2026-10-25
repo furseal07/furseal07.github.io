@@ -1,23 +1,18 @@
 document.documentElement.classList.add("js");
 
-// 로딩 화면: 캐릭터가 마법진 위 제자리에 서서 3차 전직합니다.
-// 단계가 바뀔 때마다 번쩍이며 실루엣 빛 색이 기획자(금) → 운영자(초록) → 개발자(하늘)로 바뀌고,
-// 100%가 되면 실루엣이 걷히며 원래 모습이 드러납니다. 블록 게이지가 한 칸씩 차고 전직 기록이 한 줄씩 찍힙니다.
+// 로딩 화면: '개발자 모드로 전환 중...' 아래 블록 게이지가 한 칸씩 차고, 전환 기록이 한 줄씩 찍힙니다.
 const loader = document.querySelector("#site-loader");
 const loaderCount = document.querySelector("#loader-count");
 const loaderMessage = document.querySelector("#loader-message");
 const loaderProgress = document.querySelector("#loader-progress");
-const loaderStage = document.querySelector("#loader-stage");
-const loaderFlash = document.querySelector("#loader-flash");
-const loaderClass = document.querySelector("#loader-class");
 const loaderLog = document.querySelector("#loader-log");
 const LOADER_BLOCKS = 20;
-// [이 진행률(%)부터, 기록 한 줄, 캐릭터 아래 직업 이름]
+// [이 진행률(%)부터, 기록 한 줄]
 const loaderSteps = [
-  [0, "1차 직업 [기획자] 경험치 불러오는 중", "기획자"],
-  [34, "2차 직업 [운영자] 경험치 이전 완료", "운영자"],
-  [67, "3차 직업 [개발자] 스킬 트리 해금", "개발자"],
-  [100, "전직 완료! 개발자 LV.28 등장", "개발자 LV.28"]
+  [0, "기획 경험 불러오는 중"],
+  [34, "운영 경험 동기화 완료"],
+  [67, "개발 환경 설정 완료"],
+  [100, "개발자 모드 전환 완료!"]
 ];
 
 const finishLoader = () => {
@@ -29,8 +24,17 @@ const finishLoader = () => {
   window.setTimeout(() => loader.remove(), reduceMotion ? 50 : 950);
 };
 
+// 이 탭에서 이미 한 번 봤다면(새로고침 등) 로딩 화면을 건너뜁니다.
+const LOADER_KEY = "pf-loader-seen";
+let loaderSeen = false;
+try {
+  loaderSeen = sessionStorage.getItem(LOADER_KEY) === "1";
+  sessionStorage.setItem(LOADER_KEY, "1");
+} catch {}
+
 const startLoader = () => {
-  if (!loader || !loaderCount || !loaderProgress || !loaderStage || !loaderLog) {
+  if (loaderSeen || !loader || !loaderCount || !loaderProgress || !loaderLog) {
+    loader?.remove();
     document.body.classList.remove("is-loading");
     document.body.classList.add("is-ready");
     return;
@@ -57,13 +61,6 @@ const startLoader = () => {
     if (index === loaderSteps.length - 1) line.classList.add("is-final");
     loaderLog.appendChild(line);
     if (loaderMessage) loaderMessage.textContent = loaderSteps[index][1];
-    if (loaderClass) loaderClass.textContent = loaderSteps[index][2];
-    loaderStage.dataset.stage = String(index);   // CSS 가 단계마다 빛 색과 실루엣을 바꿉니다
-    if (index > 0 && loaderFlash && !reduceMotion) {
-      loaderFlash.classList.remove("is-on");
-      void loaderFlash.offsetWidth; // 번쩍임 애니메이션을 처음부터 다시 재생
-      loaderFlash.classList.add("is-on");
-    }
   };
 
   const tick = (timestamp) => {
@@ -82,7 +79,7 @@ const startLoader = () => {
     if (progress < 1) {
       window.requestAnimationFrame(tick);
     } else {
-      window.setTimeout(finishLoader, reduceMotion ? 50 : 900);   // 원래 모습을 잠깐 보여 준 뒤 닫습니다
+      window.setTimeout(finishLoader, reduceMotion ? 50 : 600);   // 완료 줄을 잠깐 보여 준 뒤 닫습니다
     }
   };
 
@@ -96,8 +93,6 @@ const menuButton = document.querySelector(".menu-button");
 const mobileNav = document.querySelector(".mobile-nav");
 const navLinks = [...document.querySelectorAll(".desktop-nav a, .mobile-nav a")];
 const pages = [...document.querySelectorAll(".page[data-page]")];
-const dialog = document.querySelector("#project-dialog");
-const dialogClose = dialog.querySelector(".dialog-close");
 const contactTrigger = document.querySelector("[data-contact-open]");
 const contactDialog = document.querySelector("#contact-dialog");
 const contactDialogClose = contactDialog.querySelector(".contact-dialog-close");
@@ -110,27 +105,27 @@ const projectData = {
   skyroute: {
     index: "01 / CASE STUDY",
     title: "SKYROUTE",
-    subtitle: "항공사 예매 및 운항 관리 웹 서비스 · 5인 팀 · 2026.06—07",
+    subtitle: "항공사 예매 및 운항 관리 웹 서비스 · 5인 팀 · 2026.06.10 ~ 2026.07.28 (약 7주)",
     blocks: [
-      ["Problem", "문제와 목표", "항공사 내부 기준 정보와 운항 스케줄, 사용자의 항공권 검색·예약·결제·취소·환불이 각각 분리되지 않고 하나의 업무 흐름으로 연결되어야 했습니다."],
+      ["Problem", "문제와 목표", "Spring Boot 기반 웹 환경과 Oracle DB로 항공사 예매·운항 관리의 핵심 업무 흐름을 구현하는 것이 목표였습니다. 내부 기준 정보와 운항 스케줄, 사용자의 검색·예약·결제·취소·환불이 따로 떨어지지 않고 아래 흐름처럼 하나의 데이터로 이어져야 했습니다.", ["기준 정보 등록", "운항 스케줄 등록", "항공권 검색·예약·결제", "체크인·탑승", "지연/결항 안내"]],
       ["My role", "나의 기여", ["프로젝트 기획, 요구사항 정의와 기준 문서 작성", "편도·왕복 검색부터 예약·결제 완료까지 사용자 흐름 구현", "PortOne 테스트 결제와 금액·주문번호·결제 상태 검증", "전체·부분 취소, 환불 내역 저장과 좌석 반환 로직", "사용자·지상직 공지사항과 공통 UI, 통합 테스트"]],
       ["Decision", "상태 정합성 중심 설계", "부분 취소 시 결제 상태만 바뀌면 예약·티켓·좌석·환불 금액이 어긋날 수 있었습니다. 취소 대상과 금액을 먼저 검증한 뒤 관련 상태 변경, 좌석 반환과 환불 내역 저장을 하나의 업무 흐름으로 구성했습니다."],
-      ["Verification", "통합 흐름 검증", ["기준 정보 → 운항 스케줄 → 검색 → 예약·결제 → 취소·환불 전 과정 테스트", "Oracle 제약조건과 MyBatis 매핑 점검", "결제 실패·취소 시 예약 상태와 좌석 반환 확인", "사용 중 기준 정보 변경 제한으로 참조 정합성 유지"]],
-      ["Reflection", "배운 점과 다음 단계", "기능 단위 성공만으로는 서비스가 안정적이지 않다는 점을 배웠습니다. 다음 단계에서는 상태 변경 단위 테스트와 결제·좌석 처리의 동시성 테스트를 추가하고자 합니다."],
+      ["Verification", "통합 흐름 검증", ["기준 정보 → 운항 스케줄 → 검색 → 예약·결제 → 취소·환불 전 과정 테스트", "예약·결제·환불·체크인 테스트용 Oracle 더미 데이터와 초기화 SQL 작성", "Oracle 제약조건, MyBatis 매핑, URL 경로·탭 이동 오류 디버깅", "결제 실패·취소 시 예약 상태와 좌석 반환 확인", "사용 중인 공항·노선·게이트의 삭제·비활성화 차단으로 참조 정합성 유지"]],
+      ["Reflection", "배운 점과 다음 단계", "요구사항 정의서대로 만든 테이블도 실제 예약·취소 흐름을 붙여 보니 구조 문제가 드러났습니다. 좌석·탑승객·환불 규정을 다시 설계하며 화면에서 계산할 수 있는 값은 저장하지 않고, 예매 당시 기록처럼 시점이 중요한 데이터는 원본과 분리해 스냅샷으로 남기고, 자주 바뀌는 규칙은 코드가 아닌 정책 데이터로 관리해야 한다는 기준을 얻었습니다. 다음 프로젝트에서는 ERD를 확정하기 전에 예약 → 변경 → 취소 같은 핵심 시나리오를 먼저 대입해 검증하고, 요금·수수료 같은 정책 값은 처음부터 테이블로 분리해 설계하겠습니다."],
       ["Stack", "Technology", ["Java", "Spring Boot", "Spring MVC", "Spring Security", "MyBatis", "Thymeleaf", "Oracle", "JavaScript", "Bootstrap", "PortOne"]]
     ]
   },
   kicktreff: {
     index: "02 / CASE STUDY",
     title: "KICK-TREFF",
-    subtitle: "축구·풋살 매칭 및 팀 통합 관리 플랫폼 · 4인 팀 · 2026.04—06",
+    subtitle: "아마추어 축구·풋살 매칭 및 팀 통합 관리 플랫폼 · 4인 팀 · 2026.04.17—06.02",
     blocks: [
-      ["Problem", "문제와 목표", "단체 채팅방과 엑셀 등 여러 수단에 흩어진 동호회 운영을 클럽 관리, 경기 매칭, 선수 검색, 1:1 채팅, 기록과 고객센터가 연결된 하나의 서비스로 통합했습니다."],
-      ["My role", "나의 기여", ["PM·개발팀장으로 요구사항, 우선순위, 일정과 Git 협업 총괄", "Controller–DAO–VO–JSP 계층 분리와 공통 구조 정립", "클럽 CRUD, 가입 승인·거절, 팀원·권한 관리", "관리자·공지·FAQ·문의·신고 처리", "플레이어 검색과 AJAX 폴링 1:1 채팅 구현"]],
+      ["Problem", "문제와 목표", "아마추어 축구·풋살 동호회 운영진은 단톡방, 엑셀, 단순 매칭 앱을 함께 쓰며 일정 관리와 인원 모집에 피로를 겪고 있었습니다. 이를 해소하기 위해 팀 내부의 스탯 관리·출석 체크부터 외부 팀과의 매칭, 전용 심판의 객관적인 경기 기록, 포인트 기반 결제까지 하나의 플랫폼에서 원스톱으로 제공하는 것을 목표로 했습니다. 사용자 · 클럽장 · 심판 · 관리자 네 역할이 아래 흐름을 함께 이어 갑니다.", ["클럽 생성·가입·출석", "매치 개설·신청", "포인트 결제·구장 예약", "심판 경기 기록", "스탯·랭킹 반영"]],
+      ["My role", "나의 기여", ["PM·개발팀장으로 요구사항, 우선순위, 일정과 Git 협업 총괄", "Controller–DAO–VO–JSP 계층 분리와 공통 구조 정립", "클럽 CRUD, 가입 승인·거절, 팀원·권한 관리", "팀원 강퇴·탈퇴, 팀장 권한 양도, 클럽 게시판", "관리자 대시보드와 회원·클럽·구장·심판 관리", "공지·FAQ·1:1 문의 답변·신고 처리", "플레이어 검색·프로필과 AJAX 폴링 1:1 채팅(읽음·미읽음 처리)", "공통 CSS·디자인 컴포넌트 정리와 통합 테스트·디버깅"]],
       ["Decision", "최근 메시지 기준 조회", "모든 메시지를 반복 조회하면 데이터 누적에 따라 불필요한 처리가 커지고 읽음 상태 관리가 어려워집니다. 마지막 확인 메시지 이후 데이터만 조회하고, 읽음 상태와 미읽음 수를 함께 갱신하도록 변경했습니다."],
       ["Collaboration", "공통 기준으로 재작업 감소", ["초기 요구사항과 기능 우선순위 문서화", "공통 MVC 구조와 URL·세션·권한 기준 정리", "화면별 스타일 차이를 줄이는 CSS 컴포넌트 구축", "진행 상황 공유와 통합 오류 디버깅"]],
       ["Reflection", "배운 점과 다음 단계", "개발 초기에 공통 구조와 규칙을 명확히 정의하는 것이 개발 효율과 유지보수성에 직접 연결된다는 점을 배웠습니다. WebSocket 기반 구조도 학습하며 확장 방향을 검토했습니다."],
-      ["Stack", "Technology", ["Java", "JSP/Servlet", "JDBC", "Oracle", "JavaScript", "jQuery", "AJAX", "Apache Tomcat", "Git/GitHub"]]
+      ["Stack", "Technology", ["Java", "JSP/Servlet", "JSTL", "JDBC", "Oracle", "JavaScript", "jQuery", "AJAX", "Apache Tomcat", "Git/GitHub"]]
     ]
   },
   krd: {
@@ -138,8 +133,8 @@ const projectData = {
     title: "K-RD Project",
     subtitle: "국가 연구과제 관리 시스템 · 5인 팀 · 2026.02—03",
     blocks: [
-      ["Problem", "문제와 목표", "연구과제 공고부터 신청, 평가·선정, 진행과 예산 정산까지의 업무 절차를 사용자 권한과 과제 상태에 따라 안정적으로 처리하는 Java 콘솔 시스템을 만들었습니다."],
-      ["My role", "나의 기여", ["시스템 관리자 메뉴 전반 설계·구현", "회원 조건 검색, 정보 수정과 계정 상태 관리", "권한 신청 승인·거부와 공고 상태 변경", "예산·통계 조회와 관리자 게시물 CRUD", "입력값·권한 검증과 JDBC 기반 Oracle 연동"]],
+      ["Problem", "문제와 목표", "국가 연구과제의 공고 등록부터 과제 신청, 평가·선정, 연구 진행과 예산 정산까지의 업무를 하나로 관리하는 Java 콘솔 프로그램입니다. 연구자 · 평가위원 · 연구기관 담당자 · 시스템 관리자의 권한을 나누고, 과제 진행 단계에 따른 상태 변경과 데이터를 Oracle DB에서 일관되게 처리하는 것이 목표였습니다.", ["공고 등록", "과제 신청", "평가·선정", "연구 진행", "예산 집행·정산"]],
+      ["My role", "나의 기여", ["시스템 관리자(ADM) 메뉴 전반 설계·구현", "회원 목록 조회와 ID·이름·이메일·권한·상태·가입/접속일 조건 검색", "계정 정지·연장·해제, 논리 삭제, 권한 강제 변경과 변경 이력 저장", "권한 신청 승인·거부, 공고(게시물) 상태 관리", "예산 변경 이력·집행 현황, 연도·기관별 선정 통계와 평균 경쟁률", "입력값·권한 검증 공통 유틸과 JDBC 기반 Oracle 연동"]],
       ["Decision", "이력을 보존하는 논리 삭제", "회원을 물리 삭제하면 기존 과제와 권한 신청 데이터의 관계가 훼손될 수 있어 계정 상태를 변경하는 논리 삭제를 선택했습니다. 이력을 유지하면서 비활성 회원의 접근만 제한했습니다."],
       ["Business logic", "업무 절차를 코드로 변환", ["사용자 역할별 허용 기능 구분", "권한 신청의 승인·거부 조건 검증", "허용되지 않은 공고 상태 전이 차단", "업무 단계별 관계와 이력을 유지하는 SQL 작성"]],
       ["Reflection", "배운 점과 다음 단계", "CRUD보다 먼저 실제 업무 절차와 데이터 관계를 이해해야 한다는 점을 배웠습니다. 반복되는 입력·출력 코드를 경험하며 기능별 책임 분리와 공통 모듈화의 필요성도 확인했습니다."],
@@ -184,13 +179,31 @@ function pageFromHash(hash) {
   return owner ? { page: owner.dataset.page, target } : { page: "home", target: null };
 }
 
+const questLog = document.querySelector("#quest-log");
+const questDetails = [...document.querySelectorAll(".quest-detail")];
+
 function showPage(name, target) {
+  // 프로젝트 페이지: 퀘스트 상세(#project-이름)를 고르면 목록 대신 그 상세 화면만, 아니면 목록만 보여 줍니다
+  // (#skyroute-docs 처럼 상세 화면 안쪽을 고르면 그 상세 화면을 열고 그 위치로 내려갑니다)
+  const detail = target ? target.closest(".quest-detail") : null;
+  if (name === "projects" && questLog) {
+    questLog.hidden = Boolean(detail);
+    document.querySelector("#projects .section-heading").hidden = Boolean(detail);
+    questDetails.forEach((item) => { item.hidden = item !== detail; });
+    if (detail && target === detail) target = null;   // 상세 화면 자체는 맨 위부터 보여 줍니다
+  }
   pages.forEach((page) => {
     const active = page.dataset.page === name;
     page.hidden = !active;
     if (active) page.querySelectorAll(".reveal:not(.is-visible)").forEach((element) => revealObserver.observe(element));
   });
   navLinks.forEach((link) => link.classList.toggle("is-active", link.dataset.pageLink === name));
+  // 고른 위치가 탭 안에 있으면 그 탭을 먼저 엽니다 (#skyroute-docs → 협업 문서 탭)
+  const panel = target?.closest("[role=tabpanel]");
+  if (panel) {
+    const tab = document.querySelector(`[role=tab][aria-controls="${panel.id}"]`);
+    if (tab) { activateTab(tab); target = tab.closest("[role=tablist]"); }
+  }
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (target) {
     window.requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }));
@@ -224,34 +237,102 @@ document.querySelectorAll("[data-scroll-top]").forEach((link) => {
 const initialRoute = pageFromHash(location.hash);
 showPage(initialRoute.page, initialRoute.target);
 
-document.querySelectorAll("[data-project-open]").forEach((button) => {
-  button.addEventListener("click", () => openProject(projectData[button.dataset.projectOpen]));
+// 퀘스트 상세 기록: projectData 의 문제 · 나의 기여 · 설계 결정 · 검증 · 회고를 각 상세 화면 아래에 채웁니다.
+// (기술 목록은 상세 화면 위쪽 기술 칸에 이미 있으므로 넣지 않습니다)
+document.querySelectorAll("[data-case]").forEach((container) => {
+  const project = projectData[container.dataset.case];
+  if (!project) return;
+  container.innerHTML = project.blocks.filter((block) => block[0] !== "Stack").map((block, index) => {
+    const body = Array.isArray(block[2])
+      ? `<ul>${block[2].map((item) => `<li>${item}</li>`).join("")}</ul>`
+      : `<p>${block[2]}</p>`;
+    // 네 번째 값이 있으면 업무 흐름 단계로 보여 줍니다 (1 → 2 → 3 ...)
+    const flow = block[3] ? `<ol class="case-flow">${block[3].map((step) => `<li><span>${step}</span></li>`).join("")}</ol>` : "";
+    const key = block[0] === "Decision" ? " is-key" : "";
+    return `<section class="case-block${key}"><small>${block[0].toUpperCase()}</small><h4>${block[1]}</h4>${body}${flow}</section>`;
+  }).join("");
 });
 
-function openProject(project) {
-  document.querySelector("#dialog-index").textContent = project.index;
-  document.querySelector("#dialog-title").textContent = project.title;
-  document.querySelector("#dialog-subtitle").textContent = project.subtitle;
-  document.querySelector("#dialog-content").innerHTML = project.blocks.map((block, index) => {
-    const body = Array.isArray(block[2])
-      ? (block[0] === "Stack"
-          ? `<div class="dialog-stack">${block[2].map((item) => `<span>${item}</span>`).join("")}</div>`
-          : `<ul>${block[2].map((item) => `<li>${item}</li>`).join("")}</ul>`)
-      : `<p>${block[2]}</p>`;
-    return `<section class="dialog-block${index === 4 ? " dialog-block--wide" : ""}"><small>${block[0]}</small><h3>${block[1]}</h3>${body}</section>`;
-  }).join("");
-  dialog.showModal();
-  document.body.style.overflow = "hidden";
-}
+// 실제 화면 슬라이드: 4초마다 다음 화면. 마우스를 올리거나 버튼에 초점이 있으면 멈춥니다.
+document.querySelectorAll("[data-slider]").forEach((slider) => {
+  const slides = [...slider.querySelectorAll(".shot-slider__slide")];
+  const dots = [...slider.querySelectorAll("[data-slider-dot]")];
+  const label = slider.querySelector("[data-slider-label]");
+  const count = slider.querySelector("[data-slider-count]");
+  const autoplay = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+  let timer;
+  let paused = false;
 
-function closeDialog() {
-  dialog.close();
-  document.body.style.overflow = "";
-}
+  const go = (index) => {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === current;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+      slide.querySelector("a")?.setAttribute("tabindex", active ? "0" : "-1");
+    });
+    dots.forEach((dot, i) => (i === current ? dot.setAttribute("aria-current", "true") : dot.removeAttribute("aria-current")));
+    if (label) label.textContent = slides[current].dataset.label;
+    if (count) count.textContent = `${current + 1} / ${slides.length}`;
+  };
+  const restart = () => {
+    clearInterval(timer);
+    if (autoplay && !paused) timer = setInterval(() => { if (!document.hidden) go(current + 1); }, 4000);
+  };
 
-dialogClose.addEventListener("click", closeDialog);
-dialog.addEventListener("click", (event) => { if (event.target === dialog) closeDialog(); });
-dialog.addEventListener("close", () => { document.body.style.overflow = ""; });
+  slider.querySelector("[data-slider-prev]")?.addEventListener("click", () => { go(current - 1); restart(); });
+  slider.querySelector("[data-slider-next]")?.addEventListener("click", () => { go(current + 1); restart(); });
+  dots.forEach((dot, i) => dot.addEventListener("click", () => { go(i); restart(); }));
+  slider.addEventListener("mouseenter", () => { paused = true; restart(); });
+  slider.addEventListener("mouseleave", () => { paused = false; restart(); });
+  slider.addEventListener("focusin", () => { paused = true; restart(); });
+  slider.addEventListener("focusout", () => { paused = false; restart(); });
+  restart();
+});
+
+// 상세 탭: 버튼을 누르면 해당 칸만 보여 줍니다. (← → 키로도 이동)
+function activateTab(tab) {
+  const list = tab.closest("[role=tablist]");
+  list.querySelectorAll("[role=tab]").forEach((other) => {
+    const on = other === tab;
+    other.setAttribute("aria-selected", String(on));
+    other.tabIndex = on ? 0 : -1;
+    const panel = document.getElementById(other.getAttribute("aria-controls"));
+    if (panel) panel.hidden = !on;
+  });
+}
+document.querySelectorAll("[data-tab]").forEach((tab) => {
+  tab.addEventListener("click", () => activateTab(tab));
+  tab.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    const tabs = [...tab.closest("[role=tablist]").querySelectorAll("[role=tab]")];
+    const next = tabs[(tabs.indexOf(tab) + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+    activateTab(next);
+    next.focus();
+  });
+});
+
+// 이미지 크게 보기: data-lightbox 링크를 누르면 새 창 대신 이 페이지 위에 크게 띄웁니다. (Esc · 바깥 클릭 · X로 닫기)
+const lightbox = document.querySelector("#lightbox");
+if (lightbox) {
+  const lightboxImg = lightbox.querySelector(".lightbox__img");
+  const lightboxCaption = lightbox.querySelector(".lightbox__caption");
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-lightbox]");
+    if (!link) return;
+    event.preventDefault();
+    const img = link.querySelector("img");
+    lightboxImg.src = link.getAttribute("href");
+    lightboxImg.alt = img ? img.alt : "";
+    lightboxCaption.textContent = link.closest("[data-label]")?.dataset.label || link.querySelector(".collab-doc__name")?.textContent || (img ? img.alt : "");
+    lightbox.showModal();
+    document.body.style.overflow = "hidden";
+  });
+  lightbox.querySelector(".lightbox__close").addEventListener("click", () => lightbox.close());
+  lightbox.addEventListener("click", (event) => { if (event.target === lightbox) lightbox.close(); });
+  lightbox.addEventListener("close", () => { document.body.style.overflow = ""; });
+}
 
 contactTrigger.addEventListener("click", () => {
   contactDialog.showModal();
