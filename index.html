@@ -22,6 +22,7 @@
     <!-- 로딩 화면은 이 탭에서 처음 들어올 때 한 번만. 새로고침하면 바로 본문이 보이도록 그리기 전에 표시해 둡니다. -->
     <script>try { if (sessionStorage.getItem("pf-loader-seen") === "1") document.documentElement.classList.add("skip-loader"); } catch (e) {}</script>
     <script src="js/script.js" defer></script>
+    <script src="js/krd-demo.js" defer></script>
   </head>
   <body class="is-loading">
     <!-- 로딩 화면: 밤하늘 · 달 아래 '개발자 모드로 전환 중...' 문구, 블록 게이지, 전환 기록 한 줄씩. -->
@@ -638,33 +639,46 @@ if (newStatus == 3 &amp;&amp; countActiveMatches(conn, stadiumNum) &gt; 0)
                 <div>
                   <p class="project-card__topline"><span>QUEST 03</span></p>
                   <h3>K-RD Project</h3>
-                  <p class="project-card__subtitle">국가 연구과제 관리 시스템</p>
+                  <p class="project-card__subtitle">국가 연구과제 관리 시스템 (Java 콘솔 프로그램)</p>
                 </div>
               </div>
               <span class="clear-stamp" aria-hidden="true">CLEAR</span>
             </header>
             <div class="project-card__body">
-              <div class="project-card__visual project-visual project-visual--krd" aria-hidden="true">
-                <div class="process-map">
-                  <span>공고</span><i>01</i><span>신청</span><i>02</i><span>평가</span><i>03</i><span>정산</span>
+              <!-- 실제 화면 슬라이드: 첫 화면 · 관리자 대시보드. 화면을 누르면 원본 크기로 열립니다. -->
+              <div class="project-card__visual project-visual project-visual--krd shot-slider" data-slider role="region" aria-roledescription="carousel" aria-label="K-RD Project 실제 화면">
+                <div class="shot-slider__bar">
+                  <i></i><i></i><i></i>
+                  <span data-slider-label>첫 화면 · 로그인 메뉴</span>
+                  <b data-slider-count>1 / 2</b>
                 </div>
-                <div class="admin-console">
-                  <small>ADM / ACCESS CONTROL</small>
-                  <b>LOGICAL DELETE</b>
-                  <div><span>USER</span><span>ROLE</span><span>STATUS</span></div>
+                <div class="shot-slider__viewport">
+                  <figure class="shot-slider__slide is-active" data-label="첫 화면 · 로그인 메뉴">
+                    <a href="assets/krd-main.png" data-lightbox tabindex="0"><img src="assets/krd-main.png" alt="KRD Hubs 콘솔 첫 화면 — 로고와 로그인 · 회원가입 · 종료 메뉴" width="498" height="323" /></a>
+                  </figure>
+                  <figure class="shot-slider__slide" data-label="관리자 · 시스템 관리자 대시보드" aria-hidden="true">
+                    <a href="assets/krd-admin.png" data-lightbox tabindex="-1"><img src="assets/krd-admin.png" alt="KRD Hubs 시스템 관리자 대시보드 — 회원 · 예산 · 통계 · 게시물 · 권한 신청 관리 메뉴" width="448" height="393" loading="lazy" /></a>
+                  </figure>
                 </div>
-                <span class="visual-caption">AUTH · STATE · BUDGET · HISTORY</span>
+                <div class="shot-slider__controls">
+                  <button type="button" class="shot-slider__arrow" data-slider-prev aria-label="이전 화면">◀</button>
+                  <div class="shot-slider__dots"><button type="button" data-slider-dot="0" aria-label="1번째 화면" aria-current="true"></button><button type="button" data-slider-dot="1" aria-label="2번째 화면"></button></div>
+                  <button type="button" class="shot-slider__arrow" data-slider-next aria-label="다음 화면">▶</button>
+                </div>
               </div>
               <div class="project-card__summary">
-                <p class="project-card__description">
-                  공고, 신청, 평가·선정, 진행과 예산 정산의 업무 절차를 권한과 상태 중심의 Java 콘솔
-                  시스템으로 구현했습니다.
-                </p>
+                <!-- 콘솔 프로그램이라 별도 사이트 대신, 이 페이지 위에 터미널 창을 띄워 관리자 메뉴를 직접 조작해 볼 수 있게 했습니다 (js/krd-demo.js) -->
+                <button type="button" class="demo-button" data-krd-demo-open aria-haspopup="dialog">
+                  <span class="demo-button__tag">CONSOLE DEMO</span>
+                  <strong>콘솔 데모 실행</strong>
+                  <small>이 페이지에서 바로 · 관리자 계정 adm01</small>
+                  <i aria-hidden="true">▶</i>
+                </button>
                 <ul class="project-points">
-                  <li><span>Type</span>Console system</li>
+                  <li><span>Type</span>Java console system</li>
                   <li><span>Period</span>2026.02.11 ~ 2026.03.12 (약 4주)</li>
                   <li><span>Party</span>5인 팀 프로젝트</li>
-                  <li><span>Role</span>시스템 관리자 메뉴 전반 설계·구현</li>
+                  <li><span>Role</span>시스템 관리자(ADM) 메뉴 전반 설계·구현</li>
                 </ul>
                 <dl class="tech-groups" aria-label="사용 기술">
                   <div><dt>Back-end</dt><dd><span>Java</span><span>JDBC</span></dd></div>
@@ -673,8 +687,120 @@ if (newStatus == 3 &amp;&amp; countActiveMatches(conn, stadiumNum) &gt; 0)
                 </dl>
               </div>
             </div>
-            <!-- 퀘스트 상세 기록: 문제 · 나의 기여 · 설계 결정 · 검증(협업) · 회고 · 기술 — js/script.js 의 projectData 에서 채웁니다 -->
-            <div class="quest-detail__case" data-case="krd"></div>
+            <!-- 상세 탭: '핵심 구현 · 프로젝트 기록 · 트러블슈팅' 중 하나만 보여 줍니다. -->
+            <div class="detail-tabs detail-tabs--3" role="tablist" aria-label="K-RD Project 상세 정보">
+              <button type="button" class="detail-tab" role="tab" id="krd-tab-key" aria-controls="krd-key" aria-selected="true" data-tab><small>KEY LOGIC</small>핵심 구현</button>
+              <button type="button" class="detail-tab" role="tab" id="krd-tab-case" aria-controls="krd-case" aria-selected="false" tabindex="-1" data-tab><small>CASE</small>프로젝트 기록</button>
+              <button type="button" class="detail-tab" role="tab" id="krd-tab-trouble" aria-controls="krd-trouble" aria-selected="false" tabindex="-1" data-tab><small>TROUBLE SHOOTING</small>트러블슈팅</button>
+            </div>
+            <!-- 핵심 구현(KEY LOGIC): 직접 맡은 시스템 관리자 기능 코드에서 네 가지. 코드는 실제 코드를 줄인 것입니다. -->
+            <section class="key-logic tab-panel" id="krd-key" role="tabpanel" aria-labelledby="krd-tab-key">
+              <header class="key-logic__head">
+                <p class="collab-log__label"><span>KEY LOGIC</span> 직접 구현한 시스템 관리자 기능</p>
+                <h4>관리자 기능은 데이터를 바꾸기 전에 <em>허용된 변경인지부터</em> 확인했습니다.</h4>
+              </header>
+              <div class="key-logic__grid">
+                <article class="key-card">
+                  <span class="key-card__no">01</span>
+                  <h5>입력한 조건만 붙이는 회원 검색</h5>
+                  <p>ID · 이름 · 이메일 · 권한 · 상태 · 가입일 · 마지막 접속일 9가지 조건 중 입력한 것만 WHERE 절에 붙입니다. 값은 모두 ? 자리에 바인딩해 SQL 문자열에 직접 섞지 않았습니다.</p>
+                  <pre><code>StringBuilder sql = new StringBuilder(
+  "SELECT ... FROM userInfo WHERE 1=1 ");
+List&lt;Object&gt; params = new ArrayList&lt;&gt;();
+
+if (!isEmpty(name)) {
+  sql.append(" AND user_name LIKE ? ");
+  params.add("%" + name + "%");
+}
+if (!isEmpty(regStart)) {
+  sql.append(" AND TRUNC(user_created_at) &gt;= TO_DATE(?, 'YYYY-MM-DD') ");
+  params.add(regStart);
+}
+for (int i = 0; i &lt; params.size(); i++)
+  pstmt.setObject(i + 1, params.get(i));</code></pre>
+                </article>
+                <article class="key-card">
+                  <span class="key-card__no">02</span>
+                  <h5>권한 변경과 변경 이력은 함께 저장</h5>
+                  <p>권한을 바꾸기 직전에 대상의 현재 권한과 계정 상태를 다시 읽고, 권한 UPDATE와 변경 이력 INSERT를 한 트랜잭션으로 묶었습니다. 둘 중 하나라도 실패하면 모두 되돌려 이력 없는 권한 변경이 생기지 않습니다.</p>
+                  <pre><code>conn.setAutoCommit(false);
+// SELECT user_role_cd, user_acct_status_cd ...
+if (!"ACTIVE".equalsIgnoreCase(status)) {
+  conn.rollback(); return 0;
+}
+// UPDATE userInfo SET user_role_cd = ?
+// INSERT INTO role_change_hist (...)
+//   VALUES (seq_role_change_hist.NEXTVAL, ?, ?, ?, ?, SYSDATE, ?)
+if (inserted != 1) { conn.rollback(); return 0; }
+conn.commit();</code></pre>
+                </article>
+                <article class="key-card">
+                  <span class="key-card__no">03</span>
+                  <h5>권한 신청은 대기 중인 건만 승인</h5>
+                  <p>신청 상태를 바꾸는 UPDATE에 PENDING 조건을 걸어, 이미 처리된 신청은 0건으로 끝나고 다시 승인되지 않습니다. 승인과 신청자 권한 변경은 같은 트랜잭션에서 처리합니다.</p>
+                  <pre><code>UPDATE role_application
+   SET role_app_status = 'APPROVED',
+       role_approved_at = SYSDATE,
+       role_approved_by = ?
+ WHERE role_app_id = ?
+   AND role_app_status = 'PENDING'
+
+-- 0건이면 rollback → "이미 처리되었거나 오류"
+-- 1건이면 UPDATE userinfo SET user_role_cd = ? → commit</code></pre>
+                </article>
+                <article class="key-card">
+                  <span class="key-card__no">04</span>
+                  <h5>정지 기간 검증과 만료 자동 복구</h5>
+                  <p>정지는 시작일 ≤ 오늘 ≤ 종료일일 때만, 연장은 기존 종료일 이후로만 허용합니다. 회원 관리 메뉴에 들어올 때마다 종료일이 지난 정지 계정을 ACTIVE로 되돌려, 관리자가 일일이 해제하지 않아도 됩니다.</p>
+                  <pre><code>UPDATE userInfo
+   SET user_acct_status_cd = 'ACTIVE',
+       user_penalty_end_dt = NULL
+ WHERE user_acct_status_cd = 'SUSPENDED'
+   AND REGEXP_LIKE(user_penalty_end_dt,
+                   '^\d{4}-\d{2}-\d{2}$')
+   AND TO_DATE(user_penalty_end_dt, 'YYYY-MM-DD')
+       &lt;= TRUNC(SYSDATE)</code></pre>
+                </article>
+              </div>
+            </section>
+            <!-- 퀘스트 상세 기록: js/script.js 의 projectData 에서 채웁니다 -->
+            <div class="quest-detail__case tab-panel" id="krd-case" role="tabpanel" aria-labelledby="krd-tab-case" data-case="krd" hidden></div>
+            <!-- 트러블슈팅: 상황(S) · 문제(T) · 해결(A) · 결과(R) 순서로 세 가지 -->
+            <section class="trouble tab-panel" id="krd-trouble" role="tabpanel" aria-labelledby="krd-tab-trouble" hidden>
+              <header class="key-logic__head">
+                <p class="collab-log__label"><span>TROUBLE SHOOTING</span> 문제 해결 기록</p>
+                <h4>지우고 바꾸는 기능일수록 <em>먼저 막을 것</em>을 정했습니다.</h4>
+              </header>
+              <div class="trouble__list">
+                <article class="trouble-card">
+                  <header><span class="trouble-card__no">TS 01</span><h5>회원 물리 삭제를 논리 삭제로 변경</h5><p>행을 지우는 대신 계정 상태를 DELETED로 바꿔 이력을 지켰습니다.</p></header>
+                  <div class="trouble-card__star">
+                    <div><b>SITUATION</b><ul><li>관리자 메뉴에 회원 계정 삭제 기능 필요</li><li>회원은 과제 신청 · 권한 신청 · 권한 변경 이력과 연결됨</li></ul></div>
+                    <div><b>TASK</b><ul><li>회원 행을 직접 지우면 기존 과제 · 권한 신청 데이터와의 관계가 훼손될 수 있음</li><li>관리자 계정까지 삭제될 위험</li></ul></div>
+                    <div><b>ACTION</b><ul><li>계정 상태를 DELETED로 바꾸는 논리 삭제로 구현</li><li>삭제 전 존재 여부 · 이미 삭제 · 관리자 계정 여부를 먼저 확인 (NOT_FOUND · ALREADY_DELETED · ADMIN_BLOCK)</li><li>목록 조회에서 DELETED 제외, DELETED 계정은 상태 · 권한 변경 차단</li></ul></div>
+                    <div class="is-result"><b>RESULT</b><ul><li>관련 이력을 유지하면서 비활성 회원의 시스템 접근 제한</li><li>관리자 계정 삭제 원천 차단</li></ul></div>
+                  </div>
+                </article>
+                <article class="trouble-card">
+                  <header><span class="trouble-card__no">TS 02</span><h5>잘못된 입력과 허용되지 않은 상태 변경 차단</h5><p>입력 검증은 공통 유틸로, 업무 규칙은 상태 변경 직전 검사로 나눴습니다.</p></header>
+                  <div class="trouble-card__star">
+                    <div><b>SITUATION</b><ul><li>콘솔이라 날짜 · 권한 코드 · 상태값을 모두 키보드로 입력</li><li>관리자가 공고 상태 · 회원 상태 · 권한을 강제로 바꿀 수 있음</li></ul></div>
+                    <div><b>TASK</b><ul><li>형식이 틀리거나 달력에 없는 날짜(2026-02-30), 없는 코드가 그대로 SQL까지 전달될 수 있음</li><li>기간이 끝난 공고 재오픈, 과거 날짜 정지처럼 업무상 맞지 않는 변경 가능</li></ul></div>
+                    <div><b>ACTION</b><ul><li>USH_ConsoleUtil에 필수값 · Y/N · 허용값 목록 · 실존 날짜 · 범위 정수 입력 메서드를 만들어 올바른 값이 들어올 때까지 재입력</li><li>마감 → 공고중은 마감일이 남은 경우만, 정지는 시작일 ≤ 오늘 ≤ 종료일, 연장은 기존 종료일 이후만 허용</li><li>ACTIVE 계정만 권한 변경 허용</li></ul></div>
+                    <div class="is-result"><b>RESULT</b><ul><li>잘못된 값이 DB에 닿기 전에 차단</li><li>서비스 클래스마다 반복되던 입력 검증 코드를 한 곳으로 정리</li></ul></div>
+                  </div>
+                </article>
+                <article class="trouble-card">
+                  <header><span class="trouble-card__no">TS 03</span><h5>콘솔 화면 가독성과 관리자 실수 방지</h5><p>기본 텍스트 출력을 공통 출력 규칙과 확인 단계가 있는 화면으로 바꿨습니다.</p></header>
+                  <div class="trouble-card__star">
+                    <div><b>SITUATION</b><ul><li>초기 버전은 메뉴 · 목록 · 결과를 기본 텍스트로 출력 (예: "1.승인 2.거부 0.취소 &gt;")</li></ul></div>
+                    <div><b>TASK</b><ul><li>메뉴 · 오류 · 성공 메시지가 구분되지 않아 결과 확인이 어려움</li><li>긴 목록에서 처리할 대상을 잘못 고를 위험</li></ul></div>
+                    <div><b>ACTION</b><ul><li>선택지 · 오류 · 성공 · 보조 설명에 ANSI 색상 규칙을 정하고 공통 출력 메서드로 모든 관리자 화면에 통일</li><li>목록은 열을 맞춘 표와 상태별 색으로 출력</li><li>승인 · 상태 변경 전에 선택한 대상을 카드로 다시 보여 주고 Y/N 확인</li></ul></div>
+                    <div class="is-result"><b>RESULT</b><ul><li>메뉴 구조와 처리 결과를 한눈에 확인</li><li>확인 단계로 잘못된 승인 · 변경 방지</li></ul></div>
+                  </div>
+                </article>
+              </div>
+            </section>
               <nav class="quest-detail__nav" aria-label="다른 퀘스트">
                 <a href="#project-kicktreff" data-page-link="projects">◀ 이전 퀘스트 · KICK-TREFF</a>
                 <span></span>
@@ -785,6 +911,25 @@ if (newStatus == 3 &amp;&amp; countActiveMatches(conn, stadiumNum) &gt; 0)
         <button type="button" class="dialog-close lightbox__close" aria-label="크게 보기 닫기"><span></span><span></span></button>
         <img class="lightbox__img" src="" alt="" />
         <p class="lightbox__caption"></p>
+      </div>
+    </dialog>
+
+    <!-- K-RD 콘솔 데모: 'Java 콘솔 프로그램'의 관리자 메뉴를 가상 데이터로 실행해 보는 터미널 창 (js/krd-demo.js) -->
+    <dialog class="krd-demo" id="krd-demo" aria-labelledby="krd-demo-title">
+      <div class="krd-term">
+        <header class="krd-term__bar">
+          <span class="krd-term__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+          <strong id="krd-demo-title">KRD Hubs — Java Console <small>DEMO · 가상 데이터</small></strong>
+          <button type="button" class="krd-term__btn" data-krd-restart>↺ 처음부터</button>
+          <button type="button" class="krd-term__btn krd-term__btn--close" data-krd-close aria-label="콘솔 데모 닫기">✕</button>
+        </header>
+        <div class="krd-term__screen" role="log" aria-live="polite" aria-label="콘솔 출력"></div>
+        <div class="krd-term__hints" hidden></div>
+        <form class="krd-term__form" autocomplete="off">
+          <label class="krd-term__caret" for="krd-demo-input">&gt;</label>
+          <input id="krd-demo-input" type="text" spellcheck="false" autocapitalize="off" enterkeyhint="send" placeholder="입력 후 Enter · 파란 [번호]나 아래 버튼을 눌러도 됩니다" />
+          <button type="submit" class="krd-term__send">Enter</button>
+        </form>
       </div>
     </dialog>
 
