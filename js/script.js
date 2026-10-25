@@ -1,14 +1,23 @@
 document.documentElement.classList.add("js");
 
+// 로딩 화면: 캐릭터가 마법진 위 제자리에 서서 3차 전직합니다.
+// 단계가 바뀔 때마다 번쩍이며 실루엣 빛 색이 기획자(금) → 운영자(초록) → 개발자(하늘)로 바뀌고,
+// 100%가 되면 실루엣이 걷히며 원래 모습이 드러납니다. 블록 게이지가 한 칸씩 차고 전직 기록이 한 줄씩 찍힙니다.
 const loader = document.querySelector("#site-loader");
 const loaderCount = document.querySelector("#loader-count");
 const loaderMessage = document.querySelector("#loader-message");
 const loaderProgress = document.querySelector("#loader-progress");
-const loaderProgressBar = loaderProgress?.querySelector(".loader__fill");
-const loaderPoints = [...document.querySelectorAll("[data-loader-point]")];
-const loaderMessages = [
-  "기획자에서 운영자로 . . .",
-  "운영자에서 개발자로 . . ."
+const loaderStage = document.querySelector("#loader-stage");
+const loaderFlash = document.querySelector("#loader-flash");
+const loaderClass = document.querySelector("#loader-class");
+const loaderLog = document.querySelector("#loader-log");
+const LOADER_BLOCKS = 20;
+// [이 진행률(%)부터, 기록 한 줄, 캐릭터 아래 직업 이름]
+const loaderSteps = [
+  [0, "1차 직업 [기획자] 경험치 불러오는 중", "기획자"],
+  [34, "2차 직업 [운영자] 경험치 이전 완료", "운영자"],
+  [67, "3차 직업 [개발자] 스킬 트리 해금", "개발자"],
+  [100, "전직 완료! 개발자 LV.28 등장", "개발자 LV.28"]
 ];
 
 const finishLoader = () => {
@@ -21,7 +30,7 @@ const finishLoader = () => {
 };
 
 const startLoader = () => {
-  if (!loader || !loaderCount || !loaderMessage || !loaderProgress || !loaderProgressBar) {
+  if (!loader || !loaderCount || !loaderProgress || !loaderStage || !loaderLog) {
     document.body.classList.remove("is-loading");
     document.body.classList.add("is-ready");
     return;
@@ -29,35 +38,51 @@ const startLoader = () => {
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const duration = reduceMotion ? 500 : 6000;
-  let activeMessage = 0;
+  const blocks = Array.from({ length: LOADER_BLOCKS }, () => {
+    const block = document.createElement("i");
+    loaderProgress.appendChild(block);
+    return block;
+  });
+  let activeStep = -1;
   let startedAt;
 
-  const updateMessage = (nextMessage) => {
-    if (nextMessage === activeMessage) return;
-    activeMessage = nextMessage;
-    loaderMessage.classList.add("is-changing");
-    window.setTimeout(() => {
-      loaderMessage.textContent = loaderMessages[activeMessage];
-      loaderMessage.classList.remove("is-changing");
-    }, reduceMotion ? 0 : 180);
+  const enterStep = (index) => {
+    if (index === activeStep) return;
+    // 지난 줄은 OK 표시로 마무리하고 새 줄을 찍습니다
+    const previous = loaderLog.lastElementChild;
+    if (previous) previous.classList.add("is-done");
+    activeStep = index;
+    const line = document.createElement("li");
+    line.textContent = loaderSteps[index][1];
+    if (index === loaderSteps.length - 1) line.classList.add("is-final");
+    loaderLog.appendChild(line);
+    if (loaderMessage) loaderMessage.textContent = loaderSteps[index][1];
+    if (loaderClass) loaderClass.textContent = loaderSteps[index][2];
+    loaderStage.dataset.stage = String(index);   // CSS 가 단계마다 빛 색과 실루엣을 바꿉니다
+    if (index > 0 && loaderFlash && !reduceMotion) {
+      loaderFlash.classList.remove("is-on");
+      void loaderFlash.offsetWidth; // 번쩍임 애니메이션을 처음부터 다시 재생
+      loaderFlash.classList.add("is-on");
+    }
   };
 
   const tick = (timestamp) => {
     startedAt ??= timestamp;
     const progress = Math.min((timestamp - startedAt) / duration, 1);
     const percent = Math.round(progress * 100);
-    const messageIndex = percent < 50 ? 0 : 1;
+    let step = 0;
+    loaderSteps.forEach((entry, index) => { if (percent >= entry[0]) step = index; });
 
     loaderCount.textContent = String(percent);
     loaderProgress.setAttribute("aria-valuenow", String(percent));
-    loaderProgressBar.style.transform = `scaleX(${progress})`;
-    loaderPoints.forEach((point) => point.classList.toggle("is-reached", Number(point.dataset.loaderPoint) <= percent));
-    updateMessage(messageIndex);
+    const filled = Math.floor(progress * LOADER_BLOCKS);
+    blocks.forEach((block, index) => block.classList.toggle("is-on", index < filled));
+    enterStep(step);
 
     if (progress < 1) {
       window.requestAnimationFrame(tick);
     } else {
-      window.setTimeout(finishLoader, reduceMotion ? 50 : 320);
+      window.setTimeout(finishLoader, reduceMotion ? 50 : 900);   // 원래 모습을 잠깐 보여 준 뒤 닫습니다
     }
   };
 
@@ -70,7 +95,7 @@ const header = document.querySelector(".site-header");
 const menuButton = document.querySelector(".menu-button");
 const mobileNav = document.querySelector(".mobile-nav");
 const navLinks = [...document.querySelectorAll(".desktop-nav a, .mobile-nav a")];
-const sections = [...document.querySelectorAll("main section[id]")];
+const pages = [...document.querySelectorAll(".page[data-page]")];
 const dialog = document.querySelector("#project-dialog");
 const dialogClose = dialog.querySelector(".dialog-close");
 const contactTrigger = document.querySelector("[data-contact-open]");
@@ -147,13 +172,57 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
 
-const sectionObserver = new IntersectionObserver((entries) => {
-  const active = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-  if (!active) return;
-  navLinks.forEach((link) => link.classList.toggle("is-active", link.getAttribute("href") === `#${active.target.id}`));
-}, { threshold: [0, .2, .45], rootMargin: "-30% 0px -55%" });
+// 페이지 나누기: 요약(home) · 프로젝트(projects) · 기술(skills)를 한 번에 하나만 보여 줍니다.
+// 주소 끝(#home, #projects, #skills)으로 페이지를 고르고, #project-skyroute 처럼 프로젝트 이름이 오면 프로젝트 페이지를 열고 그 카드로 내려갑니다.
+// 뒤로 가기 / 앞으로 가기도 그대로 동작합니다.
+const pageNames = pages.map((page) => page.dataset.page);
+function pageFromHash(hash) {
+  const id = (hash || "").replace("#", "");
+  if (pageNames.includes(id)) return { page: id, target: null };
+  const target = id ? document.getElementById(id) : null;
+  const owner = target?.closest(".page[data-page]");
+  return owner ? { page: owner.dataset.page, target } : { page: "home", target: null };
+}
 
-sections.forEach((section) => sectionObserver.observe(section));
+function showPage(name, target) {
+  pages.forEach((page) => {
+    const active = page.dataset.page === name;
+    page.hidden = !active;
+    if (active) page.querySelectorAll(".reveal:not(.is-visible)").forEach((element) => revealObserver.observe(element));
+  });
+  navLinks.forEach((link) => link.classList.toggle("is-active", link.dataset.pageLink === name));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (target) {
+    window.requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }));
+  } else {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+}
+
+document.querySelectorAll("a[data-page-link]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    const hash = link.getAttribute("href");
+    if (location.hash !== hash) history.pushState(null, "", hash);
+    const route = pageFromHash(hash);
+    showPage(route.page, route.target);
+  });
+});
+
+window.addEventListener("popstate", () => {
+  const route = pageFromHash(location.hash);
+  showPage(route.page, route.target);
+});
+
+document.querySelectorAll("[data-scroll-top]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+const initialRoute = pageFromHash(location.hash);
+showPage(initialRoute.page, initialRoute.target);
 
 document.querySelectorAll("[data-project-open]").forEach((button) => {
   button.addEventListener("click", () => openProject(projectData[button.dataset.projectOpen]));
